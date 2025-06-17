@@ -33,6 +33,7 @@ def new_doc(*, docs_dir: Path | None = None) -> Path:
     ----------
     docs_dir:
         Optional target directory. Defaults to ``docs`` in the project root.
+
     """
     docs_dir = docs_dir or _DEFAULT_DOCS_DIR
     docs_dir.mkdir(parents=True, exist_ok=True)

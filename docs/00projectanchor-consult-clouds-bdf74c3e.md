@@ -68,6 +68,7 @@ xxx
 2025-06-17 14:48:52 -0600
 glib-manner 53a53225
 implement method of including context lib, prompts in obsidian. 
+[[prompt1_context_lib]]
 
 
 ## Log 
@@ -77,11 +78,11 @@ xxx
 ## Checklist
 
 %% REGION %% 
-- [ ] **Write the Prompt**  
+- [x] **Write the Prompt**  
   _What does this code need to do?_  
   `...describe the target behavior, interface, or bug...`
 
-- [ ] **Log the Prompt to `docs/`**  
+- [x] **Log the Prompt to `docs/`**  
   _Where is the long-term context?_  
   `promptX_name.md` → codename: `[codename hash]`
 
