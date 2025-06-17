@@ -18,5 +18,5 @@ random codename: <codename that you'll generate>
 ```
 
 
-also, whenever you update or create any `md` file in "docs/", the last thing before commit you should do is run `zero-ai-dev-framework dev --update-toc` or the code equivalent (i.e. use the code to update CONTENTS.md you don't edit).
+also, whenever you update or create any `md` file in "docs/", the last thing before commit you should do is run `zcc dev --update-doc` or the code equivalent (i.e. use the code to update CONTENTS.md you don't edit).
 

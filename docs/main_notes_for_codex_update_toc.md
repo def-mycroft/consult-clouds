@@ -3,6 +3,6 @@
 #process-notes
 ***
 
-for codex: execute zero-ai-dev-framework dev --update-toc to regenerate docs/CONTENTS.md whenever docs are added or renamed.
+for codex: execute zcc dev --update-doc to regenerate docs/CONTENTS.md whenever docs are added or renamed.
 
 

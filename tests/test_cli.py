@@ -34,5 +34,24 @@ def test_convo(monkeypatch, tmp_path):
     assert out.read_text(encoding="utf-8") == "hi"
 
 
+def test_dev_update_doc(tmp_path):
+    docs_dir = tmp_path / "docs"
+    docs_dir.mkdir()
+    (docs_dir / "a.md").write_text("# Title", encoding="utf-8")
+
+    import importlib
+    from zero_consult_clouds import cli as cli_mod
+    importlib.reload(cli_mod)
+    code = cli_mod.main([
+        "dev",
+        "--update-doc",
+        "--docs-dir",
+        str(docs_dir),
+    ])
+    assert code == 0
+    contents = docs_dir / "CONTENTS.md"
+    assert contents.exists()
+
+
 
 
