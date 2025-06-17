@@ -32,7 +32,7 @@ The key idea is to treat Codex as a collaborator that works best with tightly sc
    - Summarize design decisions or tricky behavior in the wiki.  
    - Keep the docs short but explicit so future prompts can reference them.
 6. **Update the Table of Contents**  
-   - Execute `zero-ai-dev-framework dev --update-toc` to regenerate `docs/CONTENTS.md` whenever docs are added or renamed.
+   - Execute `zcc dev --update-doc` to regenerate `docs/CONTENTS.md` whenever docs are added or renamed.
 7. **Commit Cleanly**  
    - Review diffs, remove stray edits, and ensure docstrings follow the style guide.  
    - Commit related code and docs together with a concise message.
