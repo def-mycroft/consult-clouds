@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-zero-gptcli-clouds = "zero_consult_clouds.cli:main"
+zero-consult-clouds = "zero_consult_clouds.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["zero_consult_clouds"]
