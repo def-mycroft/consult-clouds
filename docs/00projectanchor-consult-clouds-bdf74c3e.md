@@ -57,10 +57,47 @@ xxx
 #todo update to different default model 
 #todo want global prevention that helps avoid wasting api credits
 #todo not really how I had wanted to structure this but whatever 
+#todo implement building docs and implement functionality to build the toc
+
+
+# 🧠 Anchor: implement context lib – glib-manner 53a53225
+ (0/5)
+
+2025-06-17 14:48:52 -0600
+glib-manner 53a53225
+implement method of including context lib, prompts in obsidian. 
+
+
+## Log 
+
+xxx 
+
+## Checklist
+
+%% REGION %% 
+- [ ] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
 
 
 
-2025-06-17 14:46:44 -0600 - next 
 
 # archive 
 
