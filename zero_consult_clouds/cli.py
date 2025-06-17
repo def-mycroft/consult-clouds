@@ -2,9 +2,11 @@ import argparse
 from pathlib import Path
 from typing import List
 
+
 from .chat import ChatGPT, write_history
 from .config import CONFIG_FILE, load_config, setup_config
 from .docs_tools import update_toc
+
 
 
 def _cmd_setup_config(args: argparse.Namespace) -> int:
@@ -65,7 +67,13 @@ def _cmd_convo(args: argparse.Namespace) -> int:
 
 
 def _cmd_dev(args: argparse.Namespace) -> int:
-    if args.update_doc:
+    if args.new_doc:
+        try:
+            new_doc(docs_dir=args.docs_dir)
+        except Exception as exc:  # pragma: no cover - unexpected
+            print(f"error: {exc}")
+            return 1
+    if args.update_toc:
         try:
             update_toc(docs_dir=args.docs_dir)
         except Exception as exc:  # pragma: no cover - unexpected
@@ -94,7 +102,8 @@ def build_parser() -> argparse.ArgumentParser:
     convo.set_defaults(func=_cmd_convo)
 
     dev = sub.add_parser('dev')
-    dev.add_argument('--update-doc', action='store_true')
+    dev.add_argument('--update-toc', action='store_true')
+    dev.add_argument('--new-doc', action='store_true')
     dev.add_argument('--docs-dir', type=Path)
     dev.set_defaults(func=_cmd_dev)
 

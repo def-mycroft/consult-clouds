@@ -1,6 +1,5 @@
 # prompt1 - implement context lib
 
-
 random codename: glib-manner 53a53225
 
 #prompt 
