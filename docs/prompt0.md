@@ -257,6 +257,8 @@ def dialogue(path_text_input, output_folder, prompt='', disable_dialogue=False,
 
 **prompt template utility:** *these are bullet points which specify things that are critically important to this project*
 
+* there will likely be some metnions of "zero-ai-dev-framework" here, def do not repeat this after completing this. 
+* the module provided and labeled as "I hate this code", don't put too much stock in it. it is mainly that I want to use the same auth method and libs. 
 * Follow PEP-8 conventions and document all public classes and functions, see docstring guide present in "docs/"
 * Declare CLI entry points in pyproject.toml or setup.cfg to ensure zero-gptcli-clouds commands install correctly.  
 * Ensure atomic writes when updating config.json to prevent partial configurations.  
