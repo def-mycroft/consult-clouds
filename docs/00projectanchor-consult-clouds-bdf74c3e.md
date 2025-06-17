@@ -54,21 +54,46 @@ xxx
 ***
 
 
-%% ENDREGION %%
+# 🧠 Anchor: project init – jittery-transportation 702141d0 (0/5)
 
+2025-06-17 10:28:40 -0600
+initialize project, basic module and cli. 
+jittery-transportation 702141d0
+[[prompt0]]
 
-# 🧠 Anchor: create new project – gratis-sense ec2fd233 (5/5)
-**idk I see apathetic in git log** 
-
-2025-06-14 14:07:18 -0600
-generate new project starting point from this repo 
-[[prompt1-normal-associate-763211a8]]
-[[prompt2-apathetic-fall-6ad38cd4]]
 
 
 ## Log 
 
-2025-06-14 14:08:05 -0600
+xxx 
+
+## Checklist
+
+%% REGION %% 
+- [ ] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+
+
+
 ## Checklist
 
 %% REGION %% 

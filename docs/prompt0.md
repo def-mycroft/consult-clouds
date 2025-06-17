@@ -1,182 +1,121 @@
 
+# Project Purpose and Scope
 
-want to write a python module which facilitates interacting with the openai api. I have an existing module which shows the way in which I have been accomplishing this; here:
+Clearly define the tool’s primary goal, which is to create a reusable, installable module and command-line interface that wraps interaction with a language model API. Describe what the user will gain from using the tool (e.g., automation, scriptability, repeatable prompt runs). Clarify any assumptions, such as the use of OpenAI’s API or other compatible services. This section should focus on user needs and the tool’s intended role in a larger workflow.
 
-```python
-"""
+# Core Functional Requirements
 
-# TODO - integrate summarization of context. this comment isn't located in the
-# right place but needed to get it out of head. basically would want to be able
-# to generate a summary of the input context, a full summary. could also just
-# start more integration of the booksum project into here. 
+Specify the main pieces of functionality the tool must implement—such as maintaining conversation history, using config files, and exposing CLI commands for setup and prompt execution. Explain what each component does in abstract terms without binding to any specific code. The focus should be on describing what behaviors are required, not how they should be implemented. This sets the design targets for the module and CLI parity.
 
-"""
-from . import helpers as hp
-from gpt_general.config import load_config
-from .embeddings import WikiEmbedding 
+# Structural and Modular Design
 
-import openai
-from transformers import GPT2Tokenizer
-from jinja2 import Template
+Describe the layout of the codebase in terms of logical separation: configuration handling, API logic, and CLI tooling should be distinct. Emphasize the value of clear, orthogonal modules that encapsulate responsibility and simplify future edits. Explain that names, folder organization, and division of logic are not arbitrary but essential to maintainability and clarity. This section frames the architectural principles guiding the implementation.
 
-from os.path import exists, dirname, basename, join, expanduser
-from glob import glob
-import pandas as pd
-import numpy as np
-import json
+# Interface Contracts
 
+Define the expected behavior of major public-facing objects and functions (e.g., the `send()` method should track context and return a reply). Capture how state is managed internally and how user inputs flow through the system. Where relevant, note performance, error-handling, or user-experience constraints that need to be preserved across both CLI and programmatic usage. Keep this focused on observable behavior, not implementation mechanics.
 
-CONFIG = load_config()
-MODEL = CONFIG['fancy_model']
-with open(CONFIG['api_key_path'], 'r') as f:
-    openai.api_key = f.read().strip()
+# Extensibility and Future-Proofing
+
+Describe how the initial structure should remain adaptable to future functionality, such as embedding, summarization, or model-switching. Encourage use of hooks, base classes, or loosely coupled modules so features can be expanded without rewrites. Mention the importance of version control, semantic naming, and configuration conventions that accommodate growth. This section guides forward-looking architectural decisions.
+
+# Usability and Resilience
+
+Articulate the user experience expectations—e.g., setup must be intuitive, errors should be actionable, and CLI should fail gracefully with helpful output. The focus here is on clarity, predictability, and robustness in how users interact with the system. Include advice to test for common misconfigurations and catch exceptions early. This section serves as a reminder to prioritize the developer experience alongside functionality.
+
+# Testing and Quality Signals
+
+Outline how to construct basic test cases without overprescription: validate end-to-end prompts, simulate config generation, ensure CLI-file I/O flows work as expected. Emphasize that tests are also a signal of design quality, not just correctness. Note that coverage of edge cases, meaningful error assertions, and sanity checks on outputs are more valuable than exhaustive low-level unit tests. Keep this section open-ended to allow intelligent interpretation during development.
 
 
-def archive_text_obs(text, fn):
-    """Archive convo to obsidian vault"""
-    assert exists('/l/obs-chaotic'), '/l/obs-chaotic'
-    fp = join('/l/obs-chaotic', fn)
-    t = f"#changeable-invite-automatic-output\n{text.split('# Given Context')[0]}" 
-    with open(fp, 'w') as f:
-        f.write(t)
-    print(f"wrote '{fp}'")
+***
+#############################################################################################################
 
+# Project Launch Prompt
 
-def archive_question(question, response, context, prompt, folder):
-    """Archive question, answers and context
-    # TODO - it would be useful to have the context of the names of the "chatpers"
-    # i.e. wnat to be able to retrieve what the document is that was sent as context
-    it would be useful to more quickly be able to understand what the context
-    means here, not sure how "accurate" the context is.  
+***
 
-    """
-    if not exists(folder):
-        raise Exception(f"folder {folder} not there. ")
-    tag = basename(folder)
-    fp = hp.asset_path('question-archive.jinja2')
-    assert exists(fp)
-    with open(fp, 'r') as f:
-        t = Template(f.read())
-    text = t.render(dict(question=question, response=response, context=context,
-                         prompt=prompt, tag=tag))
-    fmt = '%Y%m%dT%H%M%S MST'
-    d = pd.Timestamp.utcnow()
-    fn = f"{d.timestamp()} - {d.tz_convert('America/Denver').strftime(fmt)} - question and response.md"
-    fp = join(folder, fn)
-    with open(fp, 'w') as f:
-        f.write(text)
-    print(f"wrote '{fp}'")
-    archive_text_obs(text, fn)
+You are setting up a Python project scaffold named `zero-consult-clouds` that provides both a reusable module and CLI for interacting with OpenAI's API.
 
+## GOAL
 
-def init_convo(message='you are a helpful assistant'):
-    conversation = [
-        {"role": "system", "content": message}
-    ]
-    return conversation
+Build a pip-installable Python module `zero_consult_clouds` that:
 
+1. Provides a `ChatGPT` class to manage an OpenAI conversation. It should maintain conversation context across multiple `.send()` calls, appending messages to the history and returning the assistant’s reply.
+2. Uses a config file (`~/.config/zero_consult_clouds/config.json`) to store API keys and model preferences. Add a CLI command `zero-gptcli-clouds --setup-config` to generate this file if missing.
+3. Exposes a CLI tool `zero-gptcli-clouds` with a subcommand `convo` to send a prompt from a file (`-f INPUT.md`) and save the reply to another file (`-o OUTPUT.md`).
+4. Designed for extensibility, the base structure should allow future addition of functionality like summarization, embedding, cost estimation, or vector store RAG.
 
-def new_message(message, conversation, model='', max_tokens=2000,
-                prompt_cost=False):
-    """
-    # TODO - kinda need to reformulate this to not be adhoc
-    """
-    if not model:
-        model = MODEL
+# PROJECT STRUCTURE
 
-    # add preamble to message
-    # TODO - this should be a config param and template (message prefix)
-    message = f"relying as much as possible on the given context; {message}"
-    conversation.append({"role": "user", "content": message})
-
-    if prompt_cost:
-        tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-        n_tokens = len(tokenizer.tokenize(str(conversation)))
-        print()
-        print('the following is directly before making costly api call. ')
-        hp.estimate_price(n_tokens, model=MODEL)
-        input('continue? (any)... ')
-
-    response = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=conversation,
-        max_tokens=max_tokens,
-    )
-    reply = response['choices'][0]['message']['content']
-    conversation.append({"role": "assistant", "content": reply})
-    d = {
-        'convo':str(conversation),
-        'message':message,
-        'reply':reply,
-    }
-    
-    return conversation, reply
-
-
-def chat(query, w, folder_output='/l/tmp', full_context=False):
-    if not full_context:
-        # parse context, i.e. apply RAG
-        context = w.retrieve_relevant_chunks(query, n=CONFIG['convo_chunk_context'])
-    else:
-        # give full context
-        context = str(w.pages)
-    convo = init_convo(message='your job is to read large amounts of text and '
-                       'find key concepts in that text. more instructions will '
-                       'follow. ')
-    with open(hp.asset_path('convo-preface.jinja2'), 'r') as f:
-        prompt = Template(f.read()).render({'context':context, 'prompt':query})
-    convo, reply = new_message(prompt, convo, model=MODEL)
-    archive_question(query, reply, context, prompt, folder=folder_output)
-
-    return reply
-
-
-def dialogue(path_text_input, output_folder, prompt='', disable_dialogue=False, 
-             full_context=False):
-    """Dialogue tool
-    # TODO - would also be nice to understand how much the queries are costing
-    """
-    print(f"loading index...")
-    w = WikiEmbedding(path_text_input=path_text_input)
-
-    print(f"...done. ")
-    if prompt:
-        disable_dialogue = True
-        response = chat(prompt, w, folder_output=output_folder,
-                        full_context=full_context)
-        r = response
-        print()
-        print(prompt)
-        print(f"response: \n{'#'*80}\n{r}\n{'#'*80}\n")
-
-    if not disable_dialogue:
-        while True:
-            q = input('input question > ')
-            response = chat(q, w, folder_output=output_folder,
-                            full_context=full_context)
-            r = response
-            print()
-            print(q)
-            print(f"response: \n{'#'*80}\n{r}\n{'#'*80}\n")
-            input('continue? ')
+Create a layout like this:
 
 ```
+zero-consult-clouds/
+├── pyproject.toml
+├── setup.cfg
+├── zero_consult_clouds/
+│   ├── __init__.py
+│   ├── chat.py       # defines ChatGPT class
+│   ├── config.py     # handles loading and writing config
+│   └── cli.py        # CLI logic
+└── entry_points      # defined in pyproject.toml or setup.cfg
+```
 
-the above was written in related to another project. don't copy any of this, this is here just for a weak reference to form your solution to the prompt I'm writing here.
+# MODULE FUNCTIONALITY
 
-module rquirements:
+**ChatGPT class**
 
-* make it possible to import something from this module (once installed btw this must be an installable module), use a function/method whatever it is to send text, receive text back, and continue the conversation with the full context of the convo. so I should be able to have some object like "context" and somehow append to it. but this is the most important thing: "use a function/method whatever it is to send text, receive text back, and continue the conversation with the full context of the convo."
+* Constructor should accept an optional config or load from default path.
+* `.send(prompt: str) -> str` appends prompt to internal context, sends API call, appends reply, and returns reply.
+* `.get_context() -> list` returns the current message history.
+* Support optional max\_tokens and model override.
 
-- this should be scaffolding for a larger project that interacts w/ openai apis in general.
+**Config**
 
-- installing this should also create the ability to do `zero-gptcli-clouds convo --prompt -f /l/tmp/input.md -o /l/tmp/response.md`, which loads the file, makes an api call and writes the single response to the output file specified by -o.
+* Use `~/.config/zero_consult_clouds/config.json` to store:
 
-- provide a cli func `zero-gptcli-clouds --setup-config` which will write a default config to `~/.config`. the config should be written in
+  * `api_key`
+  * `default_model` (e.g., `gpt-4o`)
+* `--setup-config` should create a skeleton config interactively or with defaults.
 
-I'm thinking this should be class-based, e.g. there is a class ChatGPT which provides methods that interact w/ API.
+**CLI**
+
+Expose via entry points in setup:
+
+* `zero-gptcli-clouds --setup-config`
+  Writes config file.
+
+* `zero-gptcli-clouds convo -f input.md -o output.md`
+  Loads input from markdown, sends prompt using ChatGPT, saves reply to output.
+
+Use `argparse` or `click` in `cli.py` and `import ChatGPT` from the main module.
+
+# DESIGN PRINCIPLES
+
+Long-term extensibility. Building a foundation that cleanly accommodates future capabilities—whether summarization, embedding, cost estimation, or RAG—minimizes the need for disruptive rewrites as requirements evolve. By anticipating growth, you trade a small upfront architecture cost for vastly reduced future friction.
+
+Separation of concerns. Isolating configuration management, API interaction, and CLI logic into distinct modules prevents inadvertent coupling. This clarity allows contributors to work on one area without risking regressions in others, and it simplifies unit testing by narrowing each component’s responsibilities.
+
+Encapsulated conversation state. Treating the chat history as an internal, self-managed object within a `ChatGPT` class guards against context leaks and mismatches. This object-oriented approach ensures that every `.send()` call reliably reflects prior messages, a necessity when conversations span multiple turns or persist across different entry points.
+
+CLI-programmatic parity. Ensuring that every feature available via the module API is exposed through the CLI (and vice versa) avoids divergent implementations. Consistent contracts between the class methods and CLI commands mean enhancements automatically flow to both interfaces, reducing duplication and maintenance overhead.
+
+Resilient error handling and feedback. Turning opaque API failures or misconfigurations into clear, actionable messages transforms developer friction into informed next steps. By catching missing keys, invalid paths, or HTTP errors early, the tool becomes not just functional but trustworthy, fostering confidence for users and maintainers alike.
 
 
---- write an optimal prompt for codex to use to set up this project. infer from where I'm at (i.e. the current (above) prompt) to a detailed prompt that is optimized for launching a  project such as this. 
+# TEST CASES
 
+I don't want to specify too closely because I want you to influence 
+
+```python
+from zero
+```
+
+# NOTES
+
+* Do not include unused code from earlier versions.
+* Structure should be clean, Pythonic, and adhere to common project patterns.
+* Add appropriate error handling (e.g., missing API key, invalid file paths).
+* Add docstrings to major classes and functions.
 
