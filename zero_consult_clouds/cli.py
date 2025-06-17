@@ -5,7 +5,7 @@ from typing import List
 
 from .chat import ChatGPT, write_history
 from .config import CONFIG_FILE, load_config, setup_config
-from .docs_tools import update_toc
+from .docs_tools import update_toc, new_doc
 
 
 
