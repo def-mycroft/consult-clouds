@@ -2,9 +2,11 @@ import argparse
 from pathlib import Path
 from typing import List
 
-from .chat import ChatGPT
-from .config import CONFIG_FILE, setup_config
-from .docs_tools import new_doc, update_toc
+
+from .chat import ChatGPT, write_history
+from .config import CONFIG_FILE, load_config, setup_config
+from .docs_tools import update_toc
+
 
 
 def _cmd_setup_config(args: argparse.Namespace) -> int:
@@ -29,9 +31,35 @@ def _cmd_convo(args: argparse.Namespace) -> int:
         print(f"error reading {args.file}: {exc}")
         return 1
     try:
+        cfg = load_config(args.config)
         chat = ChatGPT(config_path=args.config)
+
+        if args.promptlib_pretext:
+            if cfg.promptlib_dir is None:
+                raise RuntimeError("promptlib_dir not configured")
+            for pre in args.promptlib_pretext:
+                matches = list(Path(cfg.promptlib_dir).glob(f"*{pre}*"))
+                if len(matches) != 1:
+                    raise RuntimeError(
+                        f"expected one match for {pre}, found {len(matches)}"
+                    )
+                pre_text = matches[0].read_text(encoding="utf-8")
+                text = pre_text + "\n***\n" + text
+
         reply = chat.send(text)
-        args.output.write_text(reply, encoding='utf-8')
+
+        if args.output is not None:
+            out_path = args.output
+        else:
+            if cfg.default_output_dir is None:
+                raise RuntimeError("output file required and default_output_dir not set")
+            out_path = Path(cfg.default_output_dir) / "output.md"
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(reply, encoding='utf-8')
+
+        if not args.disable_history_write:
+            write_history(text, chat.last_response, output_dir=out_path.parent)
     except Exception as exc:  # pragma: no cover - unexpected
         print(f"error: {exc}")
         return 1
@@ -67,8 +95,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     convo = sub.add_parser('convo')
     convo.add_argument('-f', '--file', type=Path, required=True)
-    convo.add_argument('-o', '--output', type=Path, required=True)
+    convo.add_argument('-o', '--output', type=Path)
     convo.add_argument('--config', type=Path, default=CONFIG_FILE)
+    convo.add_argument('--disable-history-write', action='store_true')
+    convo.add_argument('--promptlib-pretext', action='append')
     convo.set_defaults(func=_cmd_convo)
 
     dev = sub.add_parser('dev')
