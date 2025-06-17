@@ -25,5 +25,6 @@ def test_send(monkeypatch, tmp_path):
     reply = chat.send("hello")
     assert reply == "hi"
     assert chat.history[0]["content"] == "hello"
+    assert chat.last_response == result
 
 

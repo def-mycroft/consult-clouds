@@ -33,6 +33,8 @@ class Config:
 
     api_key: str
     default_model: str = "gpt-3.5-turbo"
+    default_output_dir: str | None = None
+    promptlib_dir: str | None = None
 
 
 def load_config(path: Path = CONFIG_FILE) -> Config:
@@ -52,6 +54,10 @@ def load_config(path: Path = CONFIG_FILE) -> Config:
         raise KeyError("api_key missing in config")
     if "default_model" not in data:
         data["default_model"] = "gpt-3.5-turbo"
+    if "default_output_dir" not in data:
+        data["default_output_dir"] = None
+    if "promptlib_dir" not in data:
+        data["promptlib_dir"] = None
     return Config(**data)
 
 
@@ -75,6 +81,8 @@ def setup_config(
     path: Path = CONFIG_FILE,
     api_key: str | None = None,
     default_model: str = "gpt-3.5-turbo",
+    default_output_dir: str | None = None,
+    promptlib_dir: str | None = None,
     interactive: bool = True,
 ) -> Config:
     """Interactively create or update configuration."""
@@ -85,13 +93,28 @@ def setup_config(
         model = input(f"Default model [{default_model}]: ").strip()
         if model:
             default_model = model
+        out_dir_inp = input(
+            f"Default output dir [{default_output_dir or ''}]: "
+        ).strip()
+        if out_dir_inp:
+            default_output_dir = out_dir_inp
+        promptlib_inp = input(
+            f"Promptlib dir [{promptlib_dir or ''}]: "
+        ).strip()
+        if promptlib_inp:
+            promptlib_dir = promptlib_inp
     else:
         if api_key is None:
             raise ValueError(
                 "api_key required when interactive is False"
             )
 
-    cfg = Config(api_key=api_key, default_model=default_model)
+    cfg = Config(
+        api_key=api_key,
+        default_model=default_model,
+        default_output_dir=default_output_dir,
+        promptlib_dir=promptlib_dir,
+    )
     save_config(cfg, path)
     return cfg
 
