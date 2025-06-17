@@ -61,42 +61,6 @@ xxx
 
 
 
-# 🧠 Anchor: rapid bugfixes – slow-snow 0b624f75 (0/5)
-
-2025-06-17 14:54:20 -0600
-slow-snow 0b624f75
-a collection of things, 
-
-- [ ] [add dev method to updwate toc](https://chatgpt.com/codex/tasks/task_e_6851d5dfc1208323879f08c965463524)
-
-
-## Log 
-
-xxx 
-
-## Checklist
-
-%% REGION %% 
-- [ ] **Write the Prompt**  
-  _What does this code need to do?_  
-  `...describe the target behavior, interface, or bug...`
-
-- [ ] **Log the Prompt to `docs/`**  
-  _Where is the long-term context?_  
-  `promptX_name.md` → codename: `[codename hash]`
-
-- [ ] **Describe the Purpose**  
-  _Why am I doing this?_  
-  `One sentence: This enables/clarifies/supports...`
-
-- [ ] **Execute the Change**  
-  _What will I edit, run, or generate?_  
-  `...brief note on the script/module/test touched...`
-
-- [ ] **Return Point**  
-  _Where do I pick up next?_  
-  `Next step is to... / Pending: ... / Waiting on: ...`
-%% ENDREGION %%
 
 
 # 🧠 Anchor: implement context lib – glib-manner 53a53225 (0/5)
@@ -138,6 +102,47 @@ xxx
 
 
 # archive 
+
+
+# 🧠 Anchor: rapid bugfixes – slow-snow 0b624f75 (5/5)
+**done**
+
+2025-06-17 14:54:20 -0600
+slow-snow 0b624f75
+a collection of things, 
+
+- [ ] [add dev method to updwate toc](https://chatgpt.com/codex/tasks/task_e_6851d5dfc1208323879f08c965463524)
+
+
+## Log 
+
+xxx 
+
+## Checklist
+
+%% REGION %% 
+- [ ] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+
 
 
 # 🧠 Anchor: pytest tossup – future-wash 03fdfcb2 (5/5)
