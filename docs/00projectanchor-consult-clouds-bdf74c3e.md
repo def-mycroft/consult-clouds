@@ -14,7 +14,7 @@
 %% REGION %% 
 ```copyme
 
-# 🧠 Anchor: xxx – [description] (0/5)
+# 🧠 Anchor: xxx – cdname (0/5)
 
 _Date: YYYY-MM-DD_
 
@@ -54,30 +54,40 @@ xxx
 ***
 
 
-# 🧠 Anchor: project init – jittery-transportation 702141d0 (0/5)
+#todo update to different default model 
+#todo want global prevention that helps avoid wasting api credits
+#todo not really how I had wanted to structure this but whatever 
 
-2025-06-17 10:28:40 -0600
-initialize project, basic module and cli. 
-jittery-transportation 702141d0
-[[prompt0]]
+
+
+2025-06-17 14:46:44 -0600 - next 
+
+# archive 
+
+
+# 🧠 Anchor: pytest tossup – future-wash 03fdfcb2 (5/5)
+**fixed**
+
+2025-06-17 14:25:03 -0600
+pytest tossup
+future-wash 03fdfcb2
 
 ## Log 
 
-2025-06-17 10:58:06 -0600
-writing prompt. 
+xxx 
 
 ## Checklist
 
 %% REGION %% 
-- [ ] **Write the Prompt**  
+- [x] **Write the Prompt**  
   _What does this code need to do?_  
   `...describe the target behavior, interface, or bug...`
 
-- [ ] **Log the Prompt to `docs/`**  
+- [x] **Log the Prompt to `docs/`**  
   _Where is the long-term context?_  
   `promptX_name.md` → codename: `[codename hash]`
 
-- [ ] **Describe the Purpose**  
+- [x] **Describe the Purpose**  
   _Why am I doing this?_  
   `One sentence: This enables/clarifies/supports...`
 
@@ -92,6 +102,23 @@ writing prompt.
 
 
 
+
+# 🧠 Anchor: project init – jittery-transportation 702141d0 (5/5)
+
+**great. now testing to get basic functionality up and working**
+
+2025-06-17 10:28:40 -0600
+initialize project, basic module and cli. 
+jittery-transportation 702141d0
+[[prompt0]]
+
+## Log 
+
+2025-06-17 14:20:44 -0600
+got merged. 
+
+2025-06-17 10:58:06 -0600
+writing prompt. 
 
 ## Checklist
 
@@ -118,5 +145,3 @@ writing prompt.
 %% ENDREGION %%
 
 
-
-***

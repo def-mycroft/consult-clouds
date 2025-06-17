@@ -67,6 +67,7 @@ def save_config(cfg: Config, path: Path = CONFIG_FILE) -> None:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     _atomic_write(yaml.safe_dump(cfg.__dict__), path)
+    print(f"wrote config '{path}'")
 
 
 def setup_config(
