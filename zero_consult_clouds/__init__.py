@@ -8,6 +8,7 @@ from .config import (
     save_config,
     setup_config,
 )
+from . import cli
 
 __version__ = "0.1.0"
 
@@ -18,4 +19,5 @@ __all__ = [
     "load_config",
     "save_config",
     "setup_config",
+    "cli",
 ]
