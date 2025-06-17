@@ -8,7 +8,7 @@ import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype
 
 
-@pd.api.extensions.register_dataframe_accessor("zero-consult-clouds")
+@pd.api.extensions.register_dataframe_accessor("zero_consult_clouds")
 class ZeroAccessor:
     """Provide helper methods for :class:`pandas.DataFrame`."""
 
