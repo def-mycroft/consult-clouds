@@ -64,12 +64,204 @@ Config access should fail early and loudly if required fields are missing or unr
 
 Messages printed to stdout or stderr should be handled by a messaging layer or helper, not interwoven with control logic. This separation enables easier testing, clean redirection in CI or scripts, and future i18n or UX customization. Code clarity improves when logic and user-facing language are decoupled.
 
-# Notes
+# Conceptual Project Launch Examples 
 
-* Follow PEP-8 conventions and document all public classes and functions with numpydoc-style docstrings.  
+**prompt template utility:** *these are to be ways to use this project. these should not necessarily influence design philosophy, it is more like "should be able to do something kinda like this and you tell me how". *
+
+use the cli to start a convo w/ gpt 
+
+```python
+from zero_consult_clouds import <something to be imported>
+
+prompt_daoX = "hello. you know what The Way means in Daoism. Now, from that, tell me something I should know."
+
+<do something here with whatever you imported from zero_consult_clouds>
+
+print(gpt_response_daoX)
+```
+
+...also, in about as many lines, should be able to continue the convo that was started w/ `prompt_daoX` (arbitrary label). 
+
+also, should be able to run `zero-consult-clouds --help`, and should be able to start a convo with `zero-consult-clouds convo --new -f /l/tmp/prompt.md -o /l/tmp/output.md`, i.e. the markdown file specified there might contain text specified in `prompt_daoX` above. continuing a convo via cli will be left to future development. 
+
+also,  `zero-consult-clouds --setup-config` will walk the user through setting up config. config should be in   yaml form. that is where api key that allows this project to work is stored. 
+
+# analogy
+
+the below is a module written for a different purpose than ones described here. if possible, I'd at like to keep this way of setting up auth i.e. setting openai.api_key (other than that I kinda hate this code so that is why I'm having you do something different. )
+
+```python (I hate this code)
+
+"""
+
+# TODO - integrate summarization of context. this comment isn't located in the
+# right place but needed to get it out of head. basically would want to be able
+# to generate a summary of the input context, a full summary. could also just
+# start more integration of the booksum project into here. 
+
+"""
+from . import helpers as hp
+from gpt_general.config import load_config
+from .embeddings import WikiEmbedding 
+
+import openai
+from transformers import GPT2Tokenizer
+from jinja2 import Template
+
+from os.path import exists, dirname, basename, join, expanduser
+from glob import glob
+import pandas as pd
+import numpy as np
+import json
+
+
+CONFIG = load_config()
+MODEL = CONFIG['fancy_model']
+with open(CONFIG['api_key_path'], 'r') as f:
+    openai.api_key = f.read().strip()
+
+
+def archive_text_obs(text, fn):
+    """Archive convo to obsidian vault"""
+    assert exists('/l/obs-chaotic'), '/l/obs-chaotic'
+    fp = join('/l/obs-chaotic', fn)
+    t = f"#changeable-invite-automatic-output\n{text.split('# Given Context')[0]}" 
+    with open(fp, 'w') as f:
+        f.write(t)
+    print(f"wrote '{fp}'")
+
+
+def archive_question(question, response, context, prompt, folder):
+    """Archive question, answers and context
+    # TODO - it would be useful to have the context of the names of the "chatpers"
+    # i.e. wnat to be able to retrieve what the document is that was sent as context
+    it would be useful to more quickly be able to understand what the context
+    means here, not sure how "accurate" the context is.  
+
+    """
+    if not exists(folder):
+        raise Exception(f"folder {folder} not there. ")
+    tag = basename(folder)
+    fp = hp.asset_path('question-archive.jinja2')
+    assert exists(fp)
+    with open(fp, 'r') as f:
+        t = Template(f.read())
+    text = t.render(dict(question=question, response=response, context=context,
+                         prompt=prompt, tag=tag))
+    fmt = '%Y%m%dT%H%M%S MST'
+    d = pd.Timestamp.utcnow()
+    fn = f"{d.timestamp()} - {d.tz_convert('America/Denver').strftime(fmt)} - question and response.md"
+    fp = join(folder, fn)
+    with open(fp, 'w') as f:
+        f.write(text)
+    print(f"wrote '{fp}'")
+    archive_text_obs(text, fn)
+
+
+def init_convo(message='you are a helpful assistant'):
+    conversation = [
+        {"role": "system", "content": message}
+    ]
+    return conversation
+
+
+def new_message(message, conversation, model='', max_tokens=2000,
+                prompt_cost=False):
+    """
+    # TODO - kinda need to reformulate this to not be adhoc
+    """
+    if not model:
+        model = MODEL
+
+    # add preamble to message
+    # TODO - this should be a config param and template (message prefix)
+    message = f"relying as much as possible on the given context; {message}"
+    conversation.append({"role": "user", "content": message})
+
+    if prompt_cost:
+        tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        n_tokens = len(tokenizer.tokenize(str(conversation)))
+        print()
+        print('the following is directly before making costly api call. ')
+        hp.estimate_price(n_tokens, model=MODEL)
+        input('continue? (any)... ')
+
+    response = openai.ChatCompletion.create(
+        model=MODEL,
+        messages=conversation,
+        max_tokens=max_tokens,
+    )
+    reply = response['choices'][0]['message']['content']
+    conversation.append({"role": "assistant", "content": reply})
+    d = {
+        'convo':str(conversation),
+        'message':message,
+        'reply':reply,
+    }
+    
+    return conversation, reply
+
+
+def chat(query, w, folder_output='/l/tmp', full_context=False):
+    if not full_context:
+        # parse context, i.e. apply RAG
+        context = w.retrieve_relevant_chunks(query, n=CONFIG['convo_chunk_context'])
+    else:
+        # give full context
+        context = str(w.pages)
+    convo = init_convo(message='your job is to read large amounts of text and '
+                       'find key concepts in that text. more instructions will '
+                       'follow. ')
+    with open(hp.asset_path('convo-preface.jinja2'), 'r') as f:
+        prompt = Template(f.read()).render({'context':context, 'prompt':query})
+    convo, reply = new_message(prompt, convo, model=MODEL)
+    archive_question(query, reply, context, prompt, folder=folder_output)
+
+    return reply
+
+
+def dialogue(path_text_input, output_folder, prompt='', disable_dialogue=False, 
+             full_context=False):
+    """Dialogue tool
+    # TODO - would also be nice to understand how much the queries are costing
+    """
+    print(f"loading index...")
+    w = WikiEmbedding(path_text_input=path_text_input)
+
+    print(f"...done. ")
+    if prompt:
+        disable_dialogue = True
+        response = chat(prompt, w, folder_output=output_folder,
+                        full_context=full_context)
+        r = response
+        print()
+        print(prompt)
+        print(f"response: \n{'#'*80}\n{r}\n{'#'*80}\n")
+
+    if not disable_dialogue:
+        while True:
+            q = input('input question > ')
+            response = chat(q, w, folder_output=output_folder,
+                            full_context=full_context)
+            r = response
+            print()
+            print(q)
+            print(f"response: \n{'#'*80}\n{r}\n{'#'*80}\n")
+            input('continue? ')
+
+```
+
+
+
+# Notes (callouts)
+
+**prompt template utility:** *these are bullet points which specify things that are critically important to this project*
+
+* Follow PEP-8 conventions and document all public classes and functions, see docstring guide present in "docs/"
 * Declare CLI entry points in pyproject.toml or setup.cfg to ensure zero-gptcli-clouds commands install correctly.  
 * Ensure atomic writes when updating config.json to prevent partial configurations.  
 * Omit any legacy code fragments from earlier drafts and remove unused dependencies.  
 * Keep interactive prompts minimal so the tool can operate in both CI pipelines and local shells without modification.  
 
 *** 
+
