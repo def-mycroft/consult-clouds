@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "zero-ai-dev-framework"
+name = "zero-consult-clouds"
 version = "0.1.0"
 authors = [{name = "Project Name", email = "example@example.com"}]
 description = "Project Description"
@@ -16,10 +16,12 @@ dependencies = [
     "pytest",
     "pandas",
     "matplotlib",
+    "openai",
+    "PyYAML",
 ]
 
 [project.scripts]
-zero-ai-dev-framework = "consult-clouds.cli:main"
+zero-gptcli-clouds = "zero_consult_clouds.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["consult-clouds"]
+include = ["zero_consult_clouds"]
