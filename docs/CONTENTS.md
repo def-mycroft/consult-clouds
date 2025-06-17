@@ -13,6 +13,7 @@
 - [Wiki Article Creation Instructions for Codex](main_notes_wiki_article_creation_for_codex.md)
 
 ## Prompt Articles
+- [prompt1 - implement context lib](prompt1_context_lib.md)
 - [prompt0 - launch project](prompt0_launch.md)
 
 ## Articles

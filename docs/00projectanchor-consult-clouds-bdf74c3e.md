@@ -62,8 +62,7 @@ xxx
 
 
 
-
-# 🧠 Anchor: implement context lib – glib-manner 53a53225 (0/5)
+# 🧠 Anchor: implement context lib – glib-manner 53a53225 (3/5)
 
 2025-06-17 14:48:52 -0600
 glib-manner 53a53225
@@ -86,7 +85,7 @@ xxx
   _Where is the long-term context?_  
   `promptX_name.md` → codename: `[codename hash]`
 
-- [ ] **Describe the Purpose**  
+- [x] **Describe the Purpose**  
   _Why am I doing this?_  
   `One sentence: This enables/clarifies/supports...`
 
