@@ -53,5 +53,23 @@ def test_dev_update_doc(tmp_path):
     assert contents.exists()
 
 
+def test_dev_new_doc(tmp_path):
+    docs_dir = tmp_path / "docs"
+
+    import importlib
+    from zero_consult_clouds import cli as cli_mod
+    importlib.reload(cli_mod)
+    code = cli_mod.main([
+        "dev",
+        "--new-doc",
+        "--docs-dir",
+        str(docs_dir),
+    ])
+    assert code == 0
+    files = list(docs_dir.glob("*.md"))
+    assert len(files) == 1
+    assert files[0].read_text(encoding="utf-8").startswith("# unnamed")
+
+
 
 
