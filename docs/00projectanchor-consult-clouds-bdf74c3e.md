@@ -4,7 +4,7 @@
 
 #process-notes
 
-[[zero/999-chaotic/cool-jacket/CONTENTS|CONTENTS]]
+[[zero/999-chaotic/consult-clouds bdf74c3e/CONTENTS|CONTENTS]]
 
 ***
 
@@ -53,7 +53,7 @@ xxx
 
 ***
 
-
+#todo add newdoc cli func 
 #todo update to different default model 
 #todo want global prevention that helps avoid wasting api credits
 #todo not really how I had wanted to structure this but whatever 

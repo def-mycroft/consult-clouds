@@ -12,5 +12,7 @@
 - [Styleguide for Wiki Articles](main_notes_styleguide_wiki_articles.md)
 - [Wiki Article Creation Instructions for Codex](main_notes_wiki_article_creation_for_codex.md)
 
+## Prompt Articles
+- [prompt0 - launch project](prompt0_launch.md)
+
 ## Articles
-- [Project Purpose and Scope](prompt0.md)

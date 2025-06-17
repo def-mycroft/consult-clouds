@@ -1,3 +1,8 @@
+# prompt0 - launch project
+
+#prompt 
+
+***
 # Project Purpose and Scope
 
 **prompt template utility:** *This section defines the problem space and value proposition of the tool with a focus on automatable workflows, providing Codex with the context to guide architectural decisions around usability, system boundaries, and user assumptions. It clarifies the end user's environment, expected behavior, and intended use cases, enabling Codex to generate solutions that are compatible with scripting, CLI automation, and modular Python development. This orientation grounds the code in a real deployment context, avoiding toy-level assumptions.*
