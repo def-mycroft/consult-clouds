@@ -53,16 +53,19 @@ xxx
 
 ***
 
-#todo add newdoc cli func 
-#todo update to different default model 
+#todo building out a better way of accessing promptlib 
+#todo is there a cli way to have convo? that might be main thing 
+#todo update to different default model, config default 
 #todo want global prevention that helps avoid wasting api credits
-#todo not really how I had wanted to structure this but whatever 
-#todo implement building docs and implement functionality to build the toc
 
 
 
+# archive 
 
-# 🧠 Anchor: implement context lib – glib-manner 53a53225 (3/5)
+
+
+# 🧠 Anchor: implement context lib – glib-manner 53a53225 (5/5)
+**excellent. maybe try to dev this less now and get something else done** 
 
 2025-06-17 14:48:52 -0600
 glib-manner 53a53225
@@ -89,19 +92,17 @@ xxx
   _Why am I doing this?_  
   `One sentence: This enables/clarifies/supports...`
 
-- [ ] **Execute the Change**  
+- [x] **Execute the Change**  
   _What will I edit, run, or generate?_  
   `...brief note on the script/module/test touched...`
 
-- [ ] **Return Point**  
+- [x] **Return Point**  
   _Where do I pick up next?_  
   `Next step is to... / Pending: ... / Waiting on: ...`
 %% ENDREGION %%
 
 
 
-
-# archive 
 
 
 # 🧠 Anchor: rapid bugfixes – slow-snow 0b624f75 (5/5)
