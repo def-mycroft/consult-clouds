@@ -17,3 +17,5 @@
 - [prompt0 - launch project](prompt0_launch.md)
 
 ## Articles
+- [big-period d86cc2dd](big-period-d86cc2dd.md)
+- [unnamed slow-beginning f3a7ec9f](unnamed-slow-beginning-f3a7ec9f.md)
