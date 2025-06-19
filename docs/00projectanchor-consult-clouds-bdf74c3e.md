@@ -60,6 +60,40 @@ xxx
 
 
 
+
+# 🧠 Anchor: docs for rewrite_loop (0/5)
+
+2025-06-19 09:07:20 -0600
+quick ask to codex to write docs for `rewrite_loops`. 
+
+## Log 
+
+2025-06-19 09:07:45 -0600
+## Checklist
+
+%% REGION %% 
+- [x] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+
 # 🧠 Anchor: prompt2 implement chunking – cdname (0/5)
 
 2025-06-18 21:57:05 -0600
@@ -105,6 +139,9 @@ have codex come up with a way of iteratively tweaking and improving a document.
 [[prompt2_therapeutic-essay-3e4c6fa9]]
 
 ## Log 
+
+2025-06-18 22:54:14 -0600
+
 
 2025-06-18 22:34:02 -0600
 waiting on chunking 

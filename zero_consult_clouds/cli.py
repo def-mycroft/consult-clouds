@@ -32,7 +32,6 @@ def _cmd_util(options: argparse.Namespace) -> int:
         print(f"wrote '{fp}")
 
 
-
 def _cmd_setup_config(options: argparse.Namespace) -> int:
     """Handle the ``setup-config`` sub-command."""
 
