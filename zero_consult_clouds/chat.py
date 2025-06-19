@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+from .helpers import prepend_obsidian_md
+import re
+import pandas as pd
+from uuid import uuid4 as uuid
+from codenamize import codenamize as cdname
 from typing import Dict, List
+from jinja2 import Template
 
 try:  # pragma: no cover - openai optional
     import openai  # type: ignore
@@ -25,6 +31,26 @@ class ChatGPT:
         self.history: List[Dict[str, str]] = []
         self.last_response: Dict | None = None
 
+    def append_to_global_log(self, prompt, reply):
+        """A global log of all chats is updated"""
+        # TODO - this needs to be integrated into config, i.e. fp_global_log
+        # codex: this is something you could just do, if it is simple enough and
+        # mention it as an aside in the commit. 
+        fp_global_log = '/l/chatlog-consult-clouds.md'
+        ########################################################################
+
+        with open(fp_global_log, 'r') as f:
+            text = f.read()
+        dt = pd.Timestamp.utcnow().tz_convert('America/Denver')
+        pattern = r"```jinja2\s*(.*?)```"
+        matches = re.findall(pattern, text, re.DOTALL)
+        templ = Template(matches[0])
+        i = str(uuid())
+        c = cdname(i)
+        d = {'date':dt.isoformat(), 'uuid':i, 'codename':c,
+             'uuid_prefix':i.split('-')[0], 'prompt':prompt, 'reply':reply}
+        prepend_obsidian_md(fp_global_log, text=templ.render(d))
+
     def send(
         self,
         prompt: str,
@@ -43,10 +69,10 @@ class ChatGPT:
         self.last_response = response
         reply = response["choices"][0]["message"]["content"]
         self.history.append({"role": "assistant", "content": reply})
+        self.append_to_global_log(prompt, reply)
         return reply
 
 
-import re
 
 
 def write_history(prompt: str, response: Dict, *, output_dir: Path) -> None:

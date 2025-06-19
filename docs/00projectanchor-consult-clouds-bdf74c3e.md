@@ -1,8 +1,9 @@
 # 00 Project Action Anchor
 
-
+***
 
 #process-notes
+
 
 [[zero/999-chaotic/consult-clouds bdf74c3e/CONTENTS|CONTENTS]]
 
@@ -17,6 +18,7 @@
 # 🧠 Anchor: xxx – cdname (0/5)
 
 _Date: YYYY-MM-DD_
+task: [link]()
 
 ## Log 
 
@@ -61,9 +63,11 @@ xxx
 
 
 
+***
 # 🧠 Anchor: docs for rewrite_loop (0/5)
 
 2025-06-19 09:07:20 -0600
+task: [link](https://chatgpt.com/codex/tasks/task_e_68542e858a088323a928d505efcb8a32)
 quick ask to codex to write docs for `rewrite_loops`. 
 
 ## Log 
@@ -76,11 +80,11 @@ quick ask to codex to write docs for `rewrite_loops`.
   _What does this code need to do?_  
   `...describe the target behavior, interface, or bug...`
 
-- [ ] **Log the Prompt to `docs/`**  
+- [x] **Log the Prompt to `docs/`**  
   _Where is the long-term context?_  
   `promptX_name.md` → codename: `[codename hash]`
 
-- [ ] **Describe the Purpose**  
+- [x] **Describe the Purpose**  
   _Why am I doing this?_  
   `One sentence: This enables/clarifies/supports...`
 
@@ -93,6 +97,7 @@ quick ask to codex to write docs for `rewrite_loops`.
   `Next step is to... / Pending: ... / Waiting on: ...`
 %% ENDREGION %%
 
+***
 
 # 🧠 Anchor: prompt2 implement chunking – cdname (0/5)
 

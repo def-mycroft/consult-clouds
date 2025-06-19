@@ -53,7 +53,7 @@ fi
 # --- Apply Vim global mark 'C' to cli.py ---
 vim -c "delmarks C" -c "mark C" -c "wq" cli.py
 vim -c "delmarks A" -c "mark A" -c "wq" "/l/m/docs/00projectanchor-consult-clouds-bdf74c3e.md"
-vim -c "delmarks T" -c "mark T" -c "wq" "/l/m/docs/CONTENTS.md"
+vim -c "delmarks D" -c "mark D" -c "wq" "/l/m/docs/CONTENTS.md"
 
 # --- Set aliases ---
 alias zcc=/home/zero/miniconda3/envs/zero/bin/zero-consult-clouds

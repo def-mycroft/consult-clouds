@@ -7,6 +7,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for environments with
         return value[:8]
 from uuid import uuid4 as uuid
 from jinja2 import Environment, meta
+import tiktoken
 import sys
 import time
 from pathlib import Path
@@ -78,12 +79,25 @@ def load_asset_template(name: str):
     return template
 
 
-import tiktoken
-
-
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
     """Return the number of tokens ``text`` uses for ``model``."""
 
     enc = tiktoken.encoding_for_model(model)
     return len(enc.encode(text))
+
+
+def prepend_obsidian_md(fp, text):
+    with open(fp, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    pos = content.find('***')
+    if pos == -1:
+        raise ValueError('No "***" found in file.')
+
+    insert_pos = content.find('\n', pos) + 1
+    new_content = content[:insert_pos] + text + '\n' + content[insert_pos:]
+
+    with open(fp, 'w', encoding='utf-8') as f:
+        f.write(new_content)
+    print(f"updated '{fp}'")
 

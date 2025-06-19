@@ -121,7 +121,7 @@ def _cmd_loops(options: argparse.Namespace) -> int:
 
     print(options.file)
     if not (options.dummy or options.safe):
-        input('here? >')
+        input('ready, prob going to send api calls ? >')
     if str(options.file) == 'i':
         k = 'fp_ path to input prompt (use zcc util -t) > '
         x = interactive_fill({k:0})
