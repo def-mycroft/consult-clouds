@@ -20,7 +20,7 @@ def interactive_view(text: str) -> None:
     Lines wrap at 120 columns.
     """
 
-    console = Console(width=120, record=True)
+    console = Console(width=80, record=True)
     console.print(Markdown(text))
     body = console.export_text()
 
