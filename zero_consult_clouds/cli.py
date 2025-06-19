@@ -120,9 +120,15 @@ def _cmd_dev(options: argparse.Namespace) -> int:
 def _cmd_loops(options: argparse.Namespace) -> int:
     """Handle the ``loops`` sub-command."""
 
+    print(options.file)
+    input('here? >')
+    if str(options.file) == 'i':
+        k = 'fp_ path to input prompt (use zcc util -t) > '
+        x = interactive_fill({k:0})
+        options.file = x[k]
     try:
         iterative_rewrite(
-            options.file,
+            Path(options.file),
             config_path=options.config,
             safe=options.safe,
             dummy=options.dummy,
