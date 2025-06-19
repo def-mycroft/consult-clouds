@@ -77,3 +77,13 @@ def load_asset_template(name: str):
     template = env.get_template(name)
     return template
 
+
+import tiktoken
+
+
+def count_tokens(text: str, model: str = "gpt-4o") -> int:
+    """Return the number of tokens ``text`` uses for ``model``."""
+
+    enc = tiktoken.encoding_for_model(model)
+    return len(enc.encode(text))
+

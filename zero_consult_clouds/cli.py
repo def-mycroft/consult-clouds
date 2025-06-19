@@ -41,7 +41,7 @@ def _cmd_setup_config(options: argparse.Namespace) -> int:
         setup_config(
             path=options.config,
             api_key=options.api_key,
-            default_model=options.model,
+            model=options.model,
             interactive=interactive,
         )
     except Exception as exc:  # pragma: no cover - unexpected

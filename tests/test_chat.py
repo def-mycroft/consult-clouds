@@ -3,7 +3,7 @@ from zero_consult_clouds.config import Config, save_config
 
 def test_send(monkeypatch, tmp_path):
     cfg_path = tmp_path / "c.yaml"
-    save_config(Config(api_key="k", default_model="m"), cfg_path)
+    save_config(Config(api_key="k", model="m", model_tokenmax=16000), cfg_path)
 
     result = {"choices": [{"message": {"content": "hi"}}]}
 

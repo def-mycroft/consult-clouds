@@ -32,9 +32,16 @@ class Config:
     """Simple configuration container."""
 
     api_key: str
-    default_model: str = "gpt-3.5-turbo"
+    model: str = "gpt-3.5-turbo"
+    model_tokenmax: int | None = None
     default_output_dir: str | None = None
     promptlib_dir: str | None = None
+
+
+def _default_tokenmax(model: str) -> int:
+    if model == "gpt-4o":
+        return 128000
+    return 16000
 
 
 def load_config(path: Path = CONFIG_FILE) -> Config:
@@ -52,8 +59,14 @@ def load_config(path: Path = CONFIG_FILE) -> Config:
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     if "api_key" not in data:
         raise KeyError("api_key missing in config")
-    if "default_model" not in data:
-        data["default_model"] = "gpt-3.5-turbo"
+    if "model" not in data and "default_model" in data:
+        data["model"] = data.pop("default_model")
+    if "model" not in data:
+        data["model"] = "gpt-3.5-turbo"
+    if "model-tokenmax" in data:
+        data["model_tokenmax"] = data.pop("model-tokenmax")
+    if "model_tokenmax" not in data:
+        data["model_tokenmax"] = _default_tokenmax(data["model"])
     if "default_output_dir" not in data:
         data["default_output_dir"] = None
     if "promptlib_dir" not in data:
@@ -72,7 +85,14 @@ def save_config(cfg: Config, path: Path = CONFIG_FILE) -> None:
     """Write ``cfg`` to ``path`` atomically."""
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    _atomic_write(yaml.safe_dump(cfg.__dict__), path)
+    data = {
+        "api_key": cfg.api_key,
+        "model": cfg.model,
+        "model-tokenmax": cfg.model_tokenmax,
+        "default_output_dir": cfg.default_output_dir,
+        "promptlib_dir": cfg.promptlib_dir,
+    }
+    _atomic_write(yaml.safe_dump(data), path)
     print(f"wrote config '{path}'")
 
 
@@ -80,7 +100,7 @@ def setup_config(
     *,
     path: Path = CONFIG_FILE,
     api_key: str | None = None,
-    default_model: str = "gpt-3.5-turbo",
+    model: str = "gpt-3.5-turbo",
     default_output_dir: str | None = None,
     promptlib_dir: str | None = None,
     interactive: bool = True,
@@ -90,9 +110,9 @@ def setup_config(
     if interactive:
         if api_key is None:
             api_key = input("OpenAI API key: ").strip()
-        model = input(f"Default model [{default_model}]: ").strip()
-        if model:
-            default_model = model
+        mod_inp = input(f"Model [{model}]: ").strip()
+        if mod_inp:
+            model = mod_inp
         out_dir_inp = input(
             f"Default output dir [{default_output_dir or ''}]: "
         ).strip()
@@ -111,7 +131,8 @@ def setup_config(
 
     cfg = Config(
         api_key=api_key,
-        default_model=default_model,
+        model=model,
+        model_tokenmax=_default_tokenmax(model),
         default_output_dir=default_output_dir,
         promptlib_dir=promptlib_dir,
     )

@@ -21,7 +21,7 @@ class ChatGPT:
         if openai is None:
             raise RuntimeError("openai package not installed")
         openai.api_key = cfg.api_key
-        self._model = cfg.default_model
+        self._model = cfg.model
         self.history: List[Dict[str, str]] = []
         self.last_response: Dict | None = None
 

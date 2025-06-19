@@ -5,7 +5,7 @@ from zero_consult_clouds.config import Config, save_config
 def test_convo(monkeypatch, tmp_path):
     cfg_path = tmp_path / "c.yaml"
     save_config(
-        Config(api_key="k", default_output_dir=str(tmp_path)),
+        Config(api_key="k", default_output_dir=str(tmp_path), model="m", model_tokenmax=16000),
         cfg_path,
     )
     inp = tmp_path / "in.md"
@@ -77,7 +77,7 @@ def test_dev_new_doc(tmp_path):
 def test_loops_dummy(tmp_path, monkeypatch):
     cfg_path = tmp_path / "c.yaml"
     save_config(
-        Config(api_key="k", default_output_dir=str(tmp_path)),
+        Config(api_key="k", default_output_dir=str(tmp_path), model="m", model_tokenmax=16000),
         cfg_path,
     )
     inp = tmp_path / "doc.md"
