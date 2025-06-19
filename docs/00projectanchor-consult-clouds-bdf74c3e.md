@@ -106,7 +106,8 @@ have codex come up with a way of iteratively tweaking and improving a document.
 
 ## Log 
 
-xxx 
+2025-06-18 22:34:02 -0600
+waiting on chunking 
 
 ## Checklist
 
