@@ -6,6 +6,7 @@ from typing import Callable, List
 from .chat import ChatGPT
 from .zerox_terminal_display import zerox_terminal_display
 from .config import CONFIG_FILE
+from .chunking_processor import chunk_content
 
 
 _DEFAULT_MAX_ITER = 5
@@ -39,6 +40,7 @@ def iterative_rewrite(
 ) -> List[Path]:
     text = input_file.read_text(encoding="utf-8")
     draft, context = _parse_sections(text)
+    context_chunks = chunk_content(context, config_path=config_path)
 
     if dummy:
         send: Callable[[str], str] = _dummy_send
@@ -46,12 +48,12 @@ def iterative_rewrite(
         send = _safe_send
     else:
         chat = ChatGPT(config_path=config_path)
+        for chunk in context_chunks:
+            chat.history.append({"role": "system", "content": chunk})
         send = chat.send
     interactive = not (safe or dummy)
 
-    summary = send(
-        "Summarize the purpose and fitness goals in 5 bullet points:\n" + context
-    )
+    summary = send("Summarize the purpose and fitness goals in 5 bullet points:")
     zerox_terminal_display(summary)
     if interactive:
         cont = input("Continue? [y/N] ").strip().lower()
@@ -71,7 +73,7 @@ def iterative_rewrite(
         prompt = (
             "Rewrite the following draft to better meet the purpose. "
             "After the rewrite, provide 5 bullet points describing the changes.\n"
-            f"Context:\n{context}\nComments:\n{comments}\nDraft:\n{versions[-1]}"
+            f"Comments:\n{comments}\nDraft:\n{versions[-1]}"
         )
         result = send(prompt)
         lines = result.strip().splitlines()
@@ -92,8 +94,7 @@ def iterative_rewrite(
             break
 
     final_prompt = (
-        "Score each version on fitness criteria and explain briefly.\n" +
-        context + "\n" + "\n".join(
+        "Score each version on fitness criteria and explain briefly.\n" + "\n".join(
             f"Version {idx}:\n{v}" for idx, v in enumerate(versions)
         )
     )
