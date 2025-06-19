@@ -74,5 +74,30 @@ def test_dev_new_doc(tmp_path):
     assert files[0].read_text(encoding="utf-8").startswith("# unnamed")
 
 
+def test_loops_dummy(tmp_path):
+    cfg_path = tmp_path / "c.yaml"
+    save_config(
+        Config(api_key="k", default_output_dir=str(tmp_path)),
+        cfg_path,
+    )
+    inp = tmp_path / "doc.md"
+    inp.write_text("draft\n***\ncontext", encoding="utf-8")
+
+    import importlib
+    from zero_consult_clouds import cli as cli_mod
+    importlib.reload(cli_mod)
+    code = cli_mod.main([
+        "loops",
+        "-f",
+        str(inp),
+        "--config",
+        str(cfg_path),
+        "--dummy",
+    ])
+    assert code == 0
+    files = list(tmp_path.glob("convo-*.md"))
+    assert files
+
+
 
 

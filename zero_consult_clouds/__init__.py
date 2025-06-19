@@ -21,3 +21,6 @@ __all__ = [
     "setup_config",
     "cli",
 ]
+from .rewrite_loops import iterative_rewrite
+
+__all__.append("iterative_rewrite")
