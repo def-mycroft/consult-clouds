@@ -55,7 +55,7 @@ You do not need to rewrite or refactor unrelated project parts. You will update 
 
 ## docs 
 
-add a docs/ article `tutorial-rare-week 4d080b4a.md`  with a tutorial which shows how chunking works with this code. make sure to note the commit on when that docs was added (latest before integrated). 
+add a docs/ article `tutorial-rare-week 4d080b4a.md`  with a tutorial which shows how chunking works with this code. make sure to note the commit on when that docs was added (latest before integrated). rare-week 4d080b4a
 
 ---
 

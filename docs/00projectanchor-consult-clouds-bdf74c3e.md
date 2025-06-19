@@ -60,7 +60,7 @@ xxx
 
 
 
-# 🧠 Anchor: xxx – cdname (0/5)
+# 🧠 Anchor: prompt2 implement chunking – cdname (0/5)
 
 2025-06-18 21:57:05 -0600
 
@@ -69,20 +69,20 @@ xxx
 
 ## Log 
 
-xxx 
+2025-06-18 22:12:00 -0600
 
 ## Checklist
 
 %% REGION %% 
-- [ ] **Write the Prompt**  
+- [x] **Write the Prompt**  
   _What does this code need to do?_  
   `...describe the target behavior, interface, or bug...`
 
-- [ ] **Log the Prompt to `docs/`**  
+- [x] **Log the Prompt to `docs/`**  
   _Where is the long-term context?_  
   `promptX_name.md` → codename: `[codename hash]`
 
-- [ ] **Describe the Purpose**  
+- [x] **Describe the Purpose**  
   _Why am I doing this?_  
   `One sentence: This enables/clarifies/supports...`
 
