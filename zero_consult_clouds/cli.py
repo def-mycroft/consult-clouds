@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from typing import List
+from typing import Callable, List
 
 
 from .chat import ChatGPT, write_history
@@ -10,13 +10,15 @@ from .docs_tools import update_toc, new_doc
 
 
 
-def _cmd_setup_config(args: argparse.Namespace) -> int:
-    interactive = not args.non_interactive
+def _cmd_setup_config(options: argparse.Namespace) -> int:
+    """Handle the ``setup-config`` sub-command."""
+
+    interactive = not options.non_interactive
     try:
         setup_config(
-            path=args.config,
-            api_key=args.api_key,
-            default_model=args.model,
+            path=options.config,
+            api_key=options.api_key,
+            default_model=options.model,
             interactive=interactive,
         )
     except Exception as exc:  # pragma: no cover - unexpected
@@ -25,20 +27,23 @@ def _cmd_setup_config(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_convo(args: argparse.Namespace) -> int:
-    try:
-        text = args.file.read_text(encoding='utf-8')
-    except Exception as exc:
-        print(f"error reading {args.file}: {exc}")
-        return 1
-    try:
-        cfg = load_config(args.config)
-        chat = ChatGPT(config_path=args.config)
+def _cmd_convo(options: argparse.Namespace) -> int:
+    """Handle the ``convo`` sub-command."""
 
-        if args.promptlib_pretext:
+    try:
+        text = options.file.read_text(encoding="utf-8")
+    except Exception as exc:
+        print(f"error reading {options.file}: {exc}")
+        return 1
+
+    try:
+        cfg = load_config(options.config)
+        chat = ChatGPT(config_path=options.config)
+
+        if options.promptlib_pretext:
             if cfg.promptlib_dir is None:
                 raise RuntimeError("promptlib_dir not configured")
-            for pre in args.promptlib_pretext:
+            for pre in options.promptlib_pretext:
                 matches = list(Path(cfg.promptlib_dir).glob(f"*{pre}*"))
                 if len(matches) != 1:
                     raise RuntimeError(
@@ -49,17 +54,19 @@ def _cmd_convo(args: argparse.Namespace) -> int:
 
         reply = chat.send(text)
 
-        if args.output is not None:
-            out_path = args.output
+        if options.output is not None:
+            out_path = options.output
         else:
             if cfg.default_output_dir is None:
-                raise RuntimeError("output file required and default_output_dir not set")
+                raise RuntimeError(
+                    "output file required and default_output_dir not set"
+                )
             out_path = Path(cfg.default_output_dir) / "output.md"
 
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(reply, encoding='utf-8')
+        out_path.write_text(reply, encoding="utf-8")
 
-        if not args.disable_history_write:
+        if not options.disable_history_write:
             write_history(text, chat.last_response, output_dir=out_path.parent)
     except Exception as exc:  # pragma: no cover - unexpected
         print(f"error: {exc}")
@@ -67,29 +74,35 @@ def _cmd_convo(args: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_dev(args: argparse.Namespace) -> int:
-    if args.new_doc:
+def _cmd_dev(options: argparse.Namespace) -> int:
+    """Handle the ``dev`` sub-command."""
+
+    if options.new_doc:
         try:
-            new_doc(docs_dir=args.docs_dir)
+            new_doc(docs_dir=options.docs_dir)
         except Exception as exc:  # pragma: no cover - unexpected
             print(f"error: {exc}")
             return 1
-    if args.update_toc:
+
+    if options.update_toc:
         try:
-            update_toc(docs_dir=args.docs_dir)
+            update_toc(docs_dir=options.docs_dir)
         except Exception as exc:  # pragma: no cover - unexpected
             print(f"error: {exc}")
             return 1
+
     return 0
 
 
-def _cmd_loops(args: argparse.Namespace) -> int:
+def _cmd_loops(options: argparse.Namespace) -> int:
+    """Handle the ``loops`` sub-command."""
+
     try:
         iterative_rewrite(
-            args.file,
-            config_path=args.config,
-            safe=args.safe,
-            dummy=args.dummy,
+            options.file,
+            config_path=options.config,
+            safe=options.safe,
+            dummy=options.dummy,
         )
     except Exception as exc:  # pragma: no cover - unexpected
         print(f"error: {exc}")
@@ -98,48 +111,54 @@ def _cmd_loops(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog='zero-gptcli-clouds')
-    sub = parser.add_subparsers(dest='command', required=True)
+    """Create and return the top-level :class:`argparse.ArgumentParser`."""
 
-    cfg = sub.add_parser('setup-config')
-    cfg.add_argument('--config', type=Path, default=CONFIG_FILE)
-    cfg.add_argument('--api-key')
-    cfg.add_argument('--model', default='gpt-3.5-turbo')
-    cfg.add_argument('--non-interactive', action='store_true')
-    cfg.set_defaults(func=_cmd_setup_config)
+    parser = argparse.ArgumentParser(prog="zero-gptcli-clouds")
+    subparsers = parser.add_subparsers(dest="command", required=True)
 
-    convo = sub.add_parser('convo')
-    convo.add_argument('-f', '--file', type=Path, required=True)
-    convo.add_argument('-o', '--output', type=Path)
-    convo.add_argument('--config', type=Path, default=CONFIG_FILE)
-    convo.add_argument('--disable-history-write', action='store_true')
-    convo.add_argument('--promptlib-pretext', action='append')
-    convo.set_defaults(func=_cmd_convo)
+    cfg_parser = subparsers.add_parser("setup-config")
+    cfg_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    cfg_parser.add_argument("--api-key")
+    cfg_parser.add_argument("--model", default="gpt-3.5-turbo")
+    cfg_parser.add_argument("--non-interactive", action="store_true")
+    cfg_parser.set_defaults(func=_cmd_setup_config)
 
-    loops = sub.add_parser('loops')
-    loops.add_argument('-f', '--file', type=Path, required=True)
-    loops.add_argument('--config', type=Path, default=CONFIG_FILE)
-    loops.add_argument('--safe', action='store_true')
-    loops.add_argument('--dummy', action='store_true')
-    loops.set_defaults(func=_cmd_loops)
+    convo_parser = subparsers.add_parser("convo")
+    convo_parser.add_argument("-f", "--file", type=Path, required=True)
+    convo_parser.add_argument("-o", "--output", type=Path)
+    convo_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    convo_parser.add_argument("--disable-history-write", action="store_true")
+    convo_parser.add_argument("--promptlib-pretext", action="append")
+    convo_parser.set_defaults(func=_cmd_convo)
 
-    dev = sub.add_parser('dev')
-    dev.add_argument('--update-toc', action='store_true')
-    dev.add_argument('--new-doc', action='store_true')
-    dev.add_argument('--docs-dir', type=Path)
-    dev.set_defaults(func=_cmd_dev)
+    loops_parser = subparsers.add_parser("loops")
+    loops_parser.add_argument("-f", "--file", type=Path, required=True)
+    loops_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    loops_parser.add_argument("--safe", action="store_true")
+    loops_parser.add_argument("--dummy", action="store_true")
+    loops_parser.set_defaults(func=_cmd_loops)
+
+    dev_parser = subparsers.add_parser("dev")
+    dev_parser.add_argument("--update-toc", action="store_true")
+    dev_parser.add_argument("--new-doc", action="store_true")
+    dev_parser.add_argument("--docs-dir", type=Path)
+    dev_parser.set_defaults(func=_cmd_dev)
 
     return parser
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    func = getattr(args, 'func', None)
-    if func is None:
-        parser.print_help()
+    """Entry point used by ``python -m zero_consult_clouds``."""
+
+    arg_parser = build_parser()
+    parsed_args = arg_parser.parse_args(argv)
+    handler: Callable[[argparse.Namespace], int] | None = getattr(
+        parsed_args, "func", None
+    )
+    if handler is None:
+        arg_parser.print_help()
         return 1
-    return func(args)
+    return handler(parsed_args)
 
 
 __all__ = ['main', 'build_parser']
