@@ -7,6 +7,8 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for environments with
         return value[:8]
 from uuid import uuid4 as uuid
 from jinja2 import Environment, meta
+import sys
+import time
 from pathlib import Path
 try:  # Optional dependency
     import pandas as pd  # type: ignore

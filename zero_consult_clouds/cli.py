@@ -1,12 +1,35 @@
 import argparse
 from pathlib import Path
 from typing import Callable, List
+from uuid import uuid4 as uuid
+from codenamize import codenamize
 
 
 from .chat import ChatGPT, write_history
+from .helpers import extract_template_vars, load_asset_template, codename
+from .interactive_fill import interactive_fill
 from .config import CONFIG_FILE, load_config, setup_config
 from .rewrite_loops import iterative_rewrite
 from .docs_tools import update_toc, new_doc
+
+
+def _cmd_util(options: argparse.Namespace) -> int:
+    """Handle the ``util`` sub-command."""
+
+    if options.fill_template:
+        print('this is hard coded to filling out writing_product for now')
+        t = load_asset_template(str(options.fill_template))
+        d = extract_template_vars(t)
+        fp = interactive_fill({'fp_writing_product':0})['fp_writing_product']
+        with open(fp, 'r') as f:
+            writing_product = f.read()
+        d['uuid'] = str(uuid())
+        d['codename'] = codenamize(d['uuid'])
+        d['writing_product'] = writing_product
+        fp = options.output_filepath
+        with open(fp, 'w') as f:
+            f.write(t.render(d))
+        print(f"wrote '{fp}")
 
 
 
@@ -115,6 +138,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(prog="zero-gptcli-clouds")
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    util_parser = subparsers.add_parser("util")
+    util_parser.add_argument("--output-filepath", "-f", type=Path,
+                             default="/l/tmp/prompt.md")
+    util_parser.add_argument("--fill-template", "-t", type=Path,
+                             default="")
+    util_parser.set_defaults(func=_cmd_util)
 
     cfg_parser = subparsers.add_parser("setup-config")
     cfg_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
