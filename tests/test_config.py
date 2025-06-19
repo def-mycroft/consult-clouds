@@ -7,7 +7,7 @@ def test_setup_and_load(tmp_path):
     cfg = config.setup_config(
         path=cfg_path,
         api_key="key",
-        default_model="model",
+        model="model",
         default_output_dir=str(tmp_path),
         promptlib_dir=str(tmp_path / "pl"),
         interactive=False,
@@ -18,5 +18,6 @@ def test_setup_and_load(tmp_path):
     assert data["api_key"] == "key"
     assert data["default_output_dir"] == str(tmp_path)
     assert data["promptlib_dir"] == str(tmp_path / "pl")
+    assert "model-tokenmax" in data
 
 
