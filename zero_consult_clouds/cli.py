@@ -5,6 +5,7 @@ from typing import List
 
 from .chat import ChatGPT, write_history
 from .config import CONFIG_FILE, load_config, setup_config
+from .rewrite_loops import iterative_rewrite
 from .docs_tools import update_toc, new_doc
 
 
@@ -82,6 +83,20 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_loops(args: argparse.Namespace) -> int:
+    try:
+        iterative_rewrite(
+            args.file,
+            config_path=args.config,
+            safe=args.safe,
+            dummy=args.dummy,
+        )
+    except Exception as exc:  # pragma: no cover - unexpected
+        print(f"error: {exc}")
+        return 1
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog='zero-gptcli-clouds')
     sub = parser.add_subparsers(dest='command', required=True)
@@ -100,6 +115,13 @@ def build_parser() -> argparse.ArgumentParser:
     convo.add_argument('--disable-history-write', action='store_true')
     convo.add_argument('--promptlib-pretext', action='append')
     convo.set_defaults(func=_cmd_convo)
+
+    loops = sub.add_parser('loops')
+    loops.add_argument('-f', '--file', type=Path, required=True)
+    loops.add_argument('--config', type=Path, default=CONFIG_FILE)
+    loops.add_argument('--safe', action='store_true')
+    loops.add_argument('--dummy', action='store_true')
+    loops.set_defaults(func=_cmd_loops)
 
     dev = sub.add_parser('dev')
     dev.add_argument('--update-toc', action='store_true')
