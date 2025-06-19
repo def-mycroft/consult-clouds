@@ -74,7 +74,7 @@ def test_dev_new_doc(tmp_path):
     assert files[0].read_text(encoding="utf-8").startswith("# unnamed")
 
 
-def test_loops_dummy(tmp_path):
+def test_loops_dummy(tmp_path, monkeypatch):
     cfg_path = tmp_path / "c.yaml"
     save_config(
         Config(api_key="k", default_output_dir=str(tmp_path)),
@@ -82,6 +82,8 @@ def test_loops_dummy(tmp_path):
     )
     inp = tmp_path / "doc.md"
     inp.write_text("draft\n***\ncontext", encoding="utf-8")
+
+    monkeypatch.setenv("PAGER", "cat")
 
     import importlib
     from zero_consult_clouds import cli as cli_mod

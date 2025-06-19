@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Callable, List
 
 from .chat import ChatGPT
+from .zerox_terminal_display import zerox_terminal_display
 from .config import CONFIG_FILE
 
 
@@ -51,7 +52,7 @@ def iterative_rewrite(
     summary = send(
         "Summarize the purpose and fitness goals in 5 bullet points:\n" + context
     )
-    print(summary)
+    zerox_terminal_display(summary)
     if interactive:
         cont = input("Continue? [y/N] ").strip().lower()
         if cont != "y":
@@ -81,7 +82,7 @@ def iterative_rewrite(
         out_path = out_dir / fname
         out_path.write_text(new_text, encoding="utf-8")
         output_paths.append(out_path)
-        print(bullets)
+        zerox_terminal_display(bullets)
         versions.append(new_text)
         if interactive:
             again = input("Another iteration? [y/N] ").strip().lower()
@@ -97,7 +98,7 @@ def iterative_rewrite(
         )
     )
     final = send(final_prompt)
-    print(final)
+    zerox_terminal_display(final)
     return output_paths
 
 

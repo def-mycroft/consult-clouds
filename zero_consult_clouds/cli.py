@@ -121,7 +121,8 @@ def _cmd_loops(options: argparse.Namespace) -> int:
     """Handle the ``loops`` sub-command."""
 
     print(options.file)
-    input('here? >')
+    if not (options.dummy or options.safe):
+        input('here? >')
     if str(options.file) == 'i':
         k = 'fp_ path to input prompt (use zcc util -t) > '
         x = interactive_fill({k:0})
