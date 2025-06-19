@@ -18,6 +18,8 @@
 
 ## Articles
 - [big-period d86cc2dd](big-period-d86cc2dd.md)
+- [prompt2 xxx rare-week 4d080b4a](prompt2_-rare-week-4d080b4a.md)
 - [prompt2 simple re-write loops therapeutic-essay 3e4c6fa9](prompt2_therapeutic-essay-3e4c6fa9.md)
+- [Tutorial for rare-week 4d080b4a](tutorial-rare-week-4d080b4a.md)
 - [tutorial therapeutic-essay 3e4c6fa9](tutorial_therapeutic-essay-3e4c6fa9.md)
 - [unnamed slow-beginning f3a7ec9f](unnamed-slow-beginning-f3a7ec9f.md)
