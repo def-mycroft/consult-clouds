@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
-from .helpers import prepend_obsidian_md
+from os.path import join
+from .helpers import prepend_obsidian_md, load_asset_template
 import re
 import pandas as pd
 from uuid import uuid4 as uuid
@@ -43,11 +44,20 @@ class ChatGPT:
 
         fp = '/l/gds/consult-clouds-transactions.txt'
 
+        date = pd.Timestamp.utcnow().tz_convert('America/Denver').isoformat()
         i = str(uuid())
         c = cdname(i)
         cx = c.split('-')[0]
-        d = {'uuid':i, 'codename':c}
+        d = {'uuid':i, 'codename':c, 'date':date}
+        templ_data = {'uuid':i, 'codename':c, 'date':date, 'search_name':cx,
+                      'text_sent_to':text_sent_to,
+                      'text_gotten_back':text_gotten_back}
         json_full_history = json.dumps(dict_full_history, indent=4)
+
+        fp_json = join('/l/obs-chaotic', f"chat-hist-{i}.json")
+        with open(fp_json, 'w') as f:
+            f.write(json_full_history)
+        templ_data['fp_full_history_json'] = fp_json
 
         with open(fp, 'a') as f:
             f.seek(0)
@@ -64,6 +74,14 @@ class ChatGPT:
             f.write(json_full_history)
             f.write(f"\n\n{'-'*100}\n")
         print(f"updated '{fp}'. archive id {c} {i}")
+
+        # now update obs
+        fn = f"cct {cx} {i.split('-')[0]} consult-clouds-transaction.md"
+        fp = join('/l/obs-chaotic', fn)
+        templ = load_asset_template('obsidian-promptlog.md.j2')
+        with open(fp, 'w') as f:
+            f.write(templ.render(templ_data))
+        print(f"wrote '{fp}'")
 
     def send(
         self,

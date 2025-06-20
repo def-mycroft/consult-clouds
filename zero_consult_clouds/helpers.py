@@ -26,6 +26,14 @@ except ModuleNotFoundError:  # pragma: no cover - fallback if jinja2 missing
     FileSystemLoader = None
 
 
+def sanitize_obsidian_text(text):
+    triggers = ['*', '_', '`', '[', ']', '<', '>', '#', '-', '+', '=', '|', '~',
+                '{', '}', '!', '\\']
+    for char in triggers:
+        text = text.replace(char, char + '\u200B')
+    return text
+
+
 def extract_template_vars(template_or_str):
     """Extract undeclared Jinja2 variables as a dict.
 
