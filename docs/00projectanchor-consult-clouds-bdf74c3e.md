@@ -66,40 +66,6 @@ xxx
 
 
 ***
-# 🧠 Anchor: docs for rewrite_loop (3/5)
-
-2025-06-19 09:07:20 -0600
-task: [linek](https://chatgpt.com/codex/tasks/task_e_68542e858a088323a928d505efcb8a32)
-quick ask to codex to write docs for `rewrite_loops`. 
-
-## Log 
-
-2025-06-19 09:07:45 -0600
-## Checklist
-
-%% REGION %% 
-- [x] **Write the Prompt**  
-  _What does this code need to do?_  
-  `...describe the target behavior, interface, or bug...`
-
-- [x] **Log the Prompt to `docs/`**  
-  _Where is the long-term context?_  
-  `promptX_name.md` → codename: `[codename hash]`
-
-- [x] **Describe the Purpose**  
-  _Why am I doing this?_  
-  `One sentence: This enables/clarifies/supports...`
-
-- [ ] **Execute the Change**  
-  _What will I edit, run, or generate?_  
-  `...brief note on the script/module/test touched...`
-
-- [ ] **Return Point**  
-  _Where do I pick up next?_  
-  `Next step is to... / Pending: ... / Waiting on: ...`
-%% ENDREGION %%
-
-***
 
 # 🧠 Anchor: prompt2 implement chunking – cdname (0/5)
 
@@ -110,6 +76,7 @@ quick ask to codex to write docs for `rewrite_loops`.
 
 ## Log 
 
+2025-06-20 13:05:55 -0600 - have history archived so should be able to analyze this okay. 
 2025-06-20 12:06:07 -0600 - not sure if this is working or not
 
 ## Checklist
