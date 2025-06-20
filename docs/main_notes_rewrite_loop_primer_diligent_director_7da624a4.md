@@ -1,5 +1,7 @@
 # Rewrite Loop Primer
 
+#process-notes
+
 random codename: diligent-director 7da624a4-7713-4f82-a66c-84383dbf43e9
 
 ***

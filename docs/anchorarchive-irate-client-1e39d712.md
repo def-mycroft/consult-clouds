@@ -1,24 +1,61 @@
-# 00 Project Action Anchor
+# anchor archive irate-client 1e39d712
 
-***
-
-#process-notes
-
-
-[[zero/999-chaotic/consult-clouds bdf74c3e/CONTENTS|CONTENTS]]
+random codename: irate-client 1e39d712
 
 ***
 
 
-# Template (0/5)
+
+# 🧠 Anchor: implement context lib – glib-manner 53a53225 (5/5)
+**excellent. maybe try to dev this less now and get something else done** 
+
+2025-06-17 14:48:52 -0600
+glib-manner 53a53225
+implement method of including context lib, prompts in obsidian. 
+[[prompt1_context_lib]]
+
+
+## Log 
+
+xxx 
+
+## Checklist
 
 %% REGION %% 
-```copyme
+- [x] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
 
-# 🧠 Anchor: xxx – cdname (0/5)
+- [x] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
 
-_Date: YYYY-MM-DD_
-task: [link]()
+- [x] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [x] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [x] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+
+
+
+
+# 🧠 Anchor: rapid bugfixes – slow-snow 0b624f75 (5/5)
+**done**
+
+2025-06-17 14:54:20 -0600
+slow-snow 0b624f75
+a collection of things, 
+
+- [ ] [add dev method to updwate toc](https://chatgpt.com/codex/tasks/task_e_6851d5dfc1208323879f08c965463524)
+
 
 ## Log 
 
@@ -48,69 +85,19 @@ xxx
   `Next step is to... / Pending: ... / Waiting on: ...`
 %% ENDREGION %%
 
-```
-%% ENDREGION %%
 
 
 
-***
+# 🧠 Anchor: pytest tossup – future-wash 03fdfcb2 (5/5)
+**fixed**
 
-#todo building out a better way of accessing promptlib 
-#todo is there a cli way to have convo? that might be main thing 
-#todo update to different default model, config default 
-#todo want global prevention that helps avoid wasting api credits
-
-*** 
-
-
-
-
-***
-# 🧠 Anchor: docs for rewrite_loop (3/5)
-
-2025-06-19 09:07:20 -0600
-task: [linek](https://chatgpt.com/codex/tasks/task_e_68542e858a088323a928d505efcb8a32)
-quick ask to codex to write docs for `rewrite_loops`. 
+2025-06-17 14:25:03 -0600
+pytest tossup
+future-wash 03fdfcb2
 
 ## Log 
 
-2025-06-19 09:07:45 -0600
-## Checklist
-
-%% REGION %% 
-- [x] **Write the Prompt**  
-  _What does this code need to do?_  
-  `...describe the target behavior, interface, or bug...`
-
-- [x] **Log the Prompt to `docs/`**  
-  _Where is the long-term context?_  
-  `promptX_name.md` → codename: `[codename hash]`
-
-- [x] **Describe the Purpose**  
-  _Why am I doing this?_  
-  `One sentence: This enables/clarifies/supports...`
-
-- [ ] **Execute the Change**  
-  _What will I edit, run, or generate?_  
-  `...brief note on the script/module/test touched...`
-
-- [ ] **Return Point**  
-  _Where do I pick up next?_  
-  `Next step is to... / Pending: ... / Waiting on: ...`
-%% ENDREGION %%
-
-***
-
-# 🧠 Anchor: prompt2 implement chunking – cdname (0/5)
-
-2025-06-18 21:57:05 -0600
-
-[[prompt2_-rare-week-4d080b4a]]
-
-
-## Log 
-
-2025-06-20 12:06:07 -0600 - not sure if this is working or not
+xxx 
 
 ## Checklist
 
@@ -138,10 +125,46 @@ quick ask to codex to write docs for `rewrite_loops`.
 
 
 
-***
 
+# 🧠 Anchor: project init – jittery-transportation 702141d0 (5/5)
 
-# Archive 
+**great. now testing to get basic functionality up and working**
 
-[[archived-project-anchors-ultra-tomorrow-1f27d36c]]
+2025-06-17 10:28:40 -0600
+initialize project, basic module and cli. 
+jittery-transportation 702141d0
+[[prompt0]]
+
+## Log 
+
+2025-06-17 14:20:44 -0600
+got merged. 
+
+2025-06-17 10:58:06 -0600
+writing prompt. 
+
+## Checklist
+
+%% REGION %% 
+- [x] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [x] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [x] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [x] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [x] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
 
