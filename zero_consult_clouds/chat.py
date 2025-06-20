@@ -1,8 +1,8 @@
 """ChatGPT conversation helper."""
-
 from __future__ import annotations
 
 from pathlib import Path
+import json
 from .helpers import prepend_obsidian_md
 import re
 import pandas as pd
@@ -24,6 +24,7 @@ class ChatGPT:
 
     def __init__(self, config_path: Path | None = None) -> None:
         cfg = load_config(config_path or CONFIG_FILE)
+        self.cfg = cfg
         if openai is None:
             raise RuntimeError("openai package not installed")
         openai.api_key = cfg.api_key
@@ -31,25 +32,38 @@ class ChatGPT:
         self.history: List[Dict[str, str]] = []
         self.last_response: Dict | None = None
 
-    def append_to_global_log(self, prompt, reply):
-        """A global log of all chats is updated"""
-        # TODO - this needs to be integrated into config, i.e. fp_global_log
-        # codex: this is something you could just do, if it is simple enough and
-        # mention it as an aside in the commit. 
-        fp_global_log = '/l/chatlog-consult-clouds.md'
-        ########################################################################
+    def update_transact_history(self, text_sent_to, text_gotten_back,
+                                dict_full_history):
+        """All Transactions (input/output pairs of text) Archived"""
 
-        with open(fp_global_log, 'r') as f:
-            text = f.read()
-        dt = pd.Timestamp.utcnow().tz_convert('America/Denver')
-        pattern = r"```jinja2\s*(.*?)```"
-        matches = re.findall(pattern, text, re.DOTALL)
-        templ = Template(matches[0])
+        # TODO - codex: a small fix, apply this fix
+        # codex: should have to setup a transaction_archive_filepath and use it
+        # something like this below. need to set up this in setup-config
+        # fp = self.cfg.transaction_archive_filepath
+
+        fp = '/l/gds/consult-clouds-transactions.txt'
+
         i = str(uuid())
         c = cdname(i)
-        d = {'date':dt.isoformat(), 'uuid':i, 'codename':c,
-             'uuid_prefix':i.split('-')[0], 'prompt':prompt, 'reply':reply}
-        prepend_obsidian_md(fp_global_log, text=templ.render(d))
+        cx = c.split('-')[0]
+        d = {'uuid':i, 'codename':c}
+        json_full_history = json.dumps(dict_full_history, indent=4)
+
+        with open(fp, 'a') as f:
+            f.seek(0)
+            f.write(f'\n# transaction {cx}\n')
+            f.write(str(d))
+            f.write(f"\n{'-'*100}\n")
+            f.write(f'## sent there {cx}\n\n')
+            f.write(text_sent_to)
+            f.write(f"\n\n{'-'*100}\n")
+            f.write(f'## gotten back {cx}\n\n')
+            f.write(text_gotten_back)
+            f.write(f"\n\n{'-'*100}\n")
+            f.write('## full history {cx}\n\n')
+            f.write(json_full_history)
+            f.write(f"\n\n{'-'*100}\n")
+        print(f"updated '{fp}'. archive id {c} {i}")
 
     def send(
         self,
@@ -69,7 +83,9 @@ class ChatGPT:
         self.last_response = response
         reply = response["choices"][0]["message"]["content"]
         self.history.append({"role": "assistant", "content": reply})
-        self.append_to_global_log(prompt, reply)
+
+        self.update_transact_history(prompt, reply, self.history)
+
         return reply
 
 
