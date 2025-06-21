@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-
+from typing import Optional
 
 __all__ = [
     "iter_prompt_files",
@@ -35,8 +35,12 @@ def first_line(path: Path) -> str:
     return ""
 
 
-def browse(path: Path, filter_text: str = "") -> str | None:
-    """Interactive prompt selector.
+def browse(
+    path: Path,
+    filter_text: str = "",
+    output_file: Path | None = None,
+) -> str | None:
+    """Interactive prompt selector that appends to ``output_file``.
 
     Parameters
     ----------
@@ -70,7 +74,31 @@ def browse(path: Path, filter_text: str = "") -> str | None:
         ok_text="select",
         cancel_text="quit",
     )
-    return app.run()
+    selected = app.run()
+
+    if not selected:
+        return None
+
+    if output_file is None:
+        output_file = Path("/l/obs-chaotic/prompt.md")
+
+    ans = input(f"Append {selected} to {output_file}? [y/N] ").strip().lower()
+    if ans not in {"y", "yes"}:
+        return None
+
+    try:
+        text = Path(selected).read_text(encoding="utf-8")
+    except Exception as exc:  # pragma: no cover - unexpected
+        print(f"error reading {selected}: {exc}")
+        return None
+
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with output_file.open("a", encoding="utf-8") as fh:
+        if fh.tell() > 0:
+            fh.write("\n")
+        fh.write(text)
+    print(f"appended to '{output_file}'")
+    return selected
 
 
 def cat(path: Path, uuid: str) -> str:
