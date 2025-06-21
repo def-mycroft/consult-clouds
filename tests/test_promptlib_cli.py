@@ -109,10 +109,11 @@ def test_browse_appends(tmp_path, monkeypatch):
 
     inputs = ["1", "y"]
 
-    def fake_input(*args, **kwargs):
+    def fake_prompt(*args, **kwargs):
         return inputs.pop(0)
 
-    monkeypatch.setattr("builtins.input", fake_input)
+    monkeypatch.setattr("prompt_toolkit.PromptSession.prompt", fake_prompt)
+    monkeypatch.setattr("builtins.input", lambda *a, **k: inputs.pop(0))
 
     from zero_consult_clouds import promptlib as pl
 

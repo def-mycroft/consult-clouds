@@ -1,7 +1,10 @@
 from zero_consult_clouds.config import Config, save_config
+import os
 
 
 def test_send(monkeypatch, tmp_path):
+    os.makedirs("/l/obs-chaotic", exist_ok=True)
+    os.makedirs("/l/gds", exist_ok=True)
     cfg_path = tmp_path / "c.yaml"
     save_config(Config(api_key="k", model="m", model_tokenmax=16000), cfg_path)
 

@@ -5,6 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import FuzzyWordCompleter
+
 __all__ = [
     "iter_prompt_files",
     "first_line",
@@ -62,23 +65,40 @@ def browse(
     print(f"promptlib archive: {path}")
     print(f"total: {len(files)} prompts")
 
-    items = []
+    mapping: dict[str, Path] = {}
+    display_items = []
     for i, fp in enumerate(files, 1):
         line = first_line(fp)
-        print(f"[{i}] {fp.name} - {line}")
-        items.append(fp)
+        display = f"{fp.name} - {line}"
+        print(f"[{i}] {display}")
+        mapping[str(i)] = fp
+        mapping[display] = fp
+        display_items.append(display)
+
+    session = PromptSession()
+    completer = FuzzyWordCompleter(display_items)
 
     while True:
-        sel = input("Select number or 'q' to quit: ").strip().lower()
-        if sel in {"q", "quit", ""}:
-            return None
         try:
-            idx = int(sel) - 1
-            if 0 <= idx < len(items):
-                selected = items[idx]
-                break
-        except ValueError:
-            pass
+            sel = session.prompt(
+                "Select number or search text ('q' to quit): ",
+                completer=completer,
+                complete_in_thread=True,
+            ).strip()
+        except (EOFError, KeyboardInterrupt):
+            return None
+
+        if sel.lower() in {"q", "quit", ""}:
+            return None
+
+        if sel.isdigit() and sel in mapping:
+            selected = mapping[sel]
+            break
+
+        if sel in mapping:
+            selected = mapping[sel]
+            break
+
         print("invalid selection")
 
     if output_file is None:
