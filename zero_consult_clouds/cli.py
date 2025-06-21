@@ -11,6 +11,7 @@ from .interactive_fill import interactive_fill
 from .config import CONFIG_FILE, load_config, setup_config
 from .rewrite_loops import iterative_rewrite
 from .docs_tools import update_toc, new_doc
+from . import promptlib as promptlib_mod
 
 
 def _cmd_util(options: argparse.Namespace) -> int:
@@ -139,6 +140,49 @@ def _cmd_loops(options: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_promptlib_browse(options: argparse.Namespace) -> int:
+    """Handle ``promptlib browse``."""
+    try:
+        cfg = load_config(options.config)
+        if cfg.promptlib_dir is None:
+            raise RuntimeError("promptlib_dir not configured")
+        selected = promptlib_mod.browse(Path(cfg.promptlib_dir), options.filter)
+        if selected:
+            print(selected)
+    except Exception as exc:  # pragma: no cover - unexpected
+        print(f"error: {exc}")
+        return 1
+    return 0
+
+
+def _cmd_promptlib_cat(options: argparse.Namespace) -> int:
+    """Handle ``promptlib cat``."""
+    try:
+        cfg = load_config(options.config)
+        if cfg.promptlib_dir is None:
+            raise RuntimeError("promptlib_dir not configured")
+        text = promptlib_mod.cat(Path(cfg.promptlib_dir), options.uuid)
+        print(text)
+    except Exception as exc:  # pragma: no cover - unexpected
+        print(f"error: {exc}")
+        return 1
+    return 0
+
+
+def _cmd_promptlib_stats(options: argparse.Namespace) -> int:
+    """Handle ``promptlib stats``."""
+    try:
+        cfg = load_config(options.config)
+        if cfg.promptlib_dir is None:
+            raise RuntimeError("promptlib_dir not configured")
+        total, path = promptlib_mod.stats(Path(cfg.promptlib_dir))
+        print(f"{total} promptlib files found in archive {path}")
+    except Exception as exc:  # pragma: no cover - unexpected
+        print(f"error: {exc}")
+        return 1
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create and return the top-level :class:`argparse.ArgumentParser`."""
 
@@ -173,6 +217,23 @@ def build_parser() -> argparse.ArgumentParser:
     loops_parser.add_argument("--safe", action="store_true")
     loops_parser.add_argument("--dummy", action="store_true")
     loops_parser.set_defaults(func=_cmd_loops)
+
+    pl_parser = subparsers.add_parser("promptlib")
+    pl_sub = pl_parser.add_subparsers(dest="pl_command", required=True)
+
+    browse_parser = pl_sub.add_parser("browse")
+    browse_parser.add_argument("--filter", default="")
+    browse_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    browse_parser.set_defaults(func=_cmd_promptlib_browse)
+
+    cat_parser = pl_sub.add_parser("cat")
+    cat_parser.add_argument("uuid")
+    cat_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    cat_parser.set_defaults(func=_cmd_promptlib_cat)
+
+    stats_parser = pl_sub.add_parser("stats")
+    stats_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
+    stats_parser.set_defaults(func=_cmd_promptlib_stats)
 
     dev_parser = subparsers.add_parser("dev")
     dev_parser.add_argument("--update-toc", action="store_true")

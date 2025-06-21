@@ -18,6 +18,7 @@ dependencies = [
     "matplotlib",
     "openai",
     "rich",
+    "prompt_toolkit",
     "PyYAML",
     "tiktoken",
 ]
