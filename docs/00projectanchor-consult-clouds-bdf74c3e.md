@@ -64,7 +64,44 @@ xxx
 
 
 
-# 🧠 Anchor: Alpha Version Promptlib imperfect-drive 6a6433cf (0/5)
+# 🧠 Anchor: promptlib alpha 1 fixes – endurable-credit 160dab9a (5/5)
+
+2025-06-21 08:58:20 -0600
+misc updates to promptlib, make it usable. just going to descrbe quieckly 
+task [link](https://chatgpt.com/codex/tasks/task_e_6856d00999f0832394d3bbdf8d6f6f05) 
+
+## Log 
+
+2025-06-21 09:38:44 -0600
+simple use cae working 
+
+## Checklist
+
+%% REGION %% 
+- [ ] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+
+
+# 🧠 Anchor: Alpha Version Promptlib imperfect-drive 6a6433cf (5/5)
 
 2025-06-21 08:06:25 -0600
 implement an aplha version of promptlib 
