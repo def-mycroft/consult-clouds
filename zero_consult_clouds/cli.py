@@ -2,33 +2,33 @@ import argparse
 from pathlib import Path
 from typing import Callable, List
 from uuid import uuid4 as uuid
+
 from codenamize import codenamize
 
-
-from .chat import ChatGPT, write_history
-from .helpers import extract_template_vars, load_asset_template, codename
-from .interactive_fill import interactive_fill
-from .config import CONFIG_FILE, load_config, setup_config
-from .rewrite_loops import iterative_rewrite
-from .docs_tools import update_toc, new_doc
 from . import promptlib as promptlib_mod
+from .chat import ChatGPT, write_history
+from .config import CONFIG_FILE, load_config, setup_config
+from .docs_tools import new_doc, update_toc
+from .helpers import codename, extract_template_vars, load_asset_template
+from .interactive_fill import interactive_fill
+from .rewrite_loops import iterative_rewrite
 
 
 def _cmd_util(options: argparse.Namespace) -> int:
     """Handle the ``util`` sub-command."""
 
     if options.fill_template:
-        print('this is hard coded to filling out writing_product for now')
+        print("this is hard coded to filling out writing_product for now")
         t = load_asset_template(str(options.fill_template))
         d = extract_template_vars(t)
-        fp = interactive_fill({'fp_writing_product':0})['fp_writing_product']
-        with open(fp, 'r') as f:
+        fp = interactive_fill({"fp_writing_product": 0})["fp_writing_product"]
+        with open(fp, "r") as f:
             writing_product = f.read()
-        d['uuid'] = str(uuid())
-        d['codename'] = codenamize(d['uuid'])
-        d['writing_product'] = writing_product
+        d["uuid"] = str(uuid())
+        d["codename"] = codenamize(d["uuid"])
+        d["writing_product"] = writing_product
         fp = options.output_filepath
-        with open(fp, 'w') as f:
+        with open(fp, "w") as f:
             f.write(t.render(d))
         print(f"wrote '{fp}")
 
@@ -122,10 +122,10 @@ def _cmd_loops(options: argparse.Namespace) -> int:
 
     print(options.file)
     if not (options.dummy or options.safe):
-        input('ready, prob going to send api calls ? >')
-    if str(options.file) == 'i':
-        k = 'fp_ path to input prompt (use zcc util -t) > '
-        x = interactive_fill({k:0})
+        input("ready, prob going to send api calls ? >")
+    if str(options.file) == "i":
+        k = "fp_ path to input prompt (use zcc util -t) > "
+        x = interactive_fill({k: 0})
         options.file = x[k]
     try:
         iterative_rewrite(
@@ -146,7 +146,11 @@ def _cmd_promptlib_browse(options: argparse.Namespace) -> int:
         cfg = load_config(options.config)
         if cfg.promptlib_dir is None:
             raise RuntimeError("promptlib_dir not configured")
-        selected = promptlib_mod.browse(Path(cfg.promptlib_dir), options.filter)
+        selected = promptlib_mod.browse(
+            Path(cfg.promptlib_dir),
+            options.filter,
+            options.output,
+        )
         if selected:
             print(selected)
     except Exception as exc:  # pragma: no cover - unexpected
@@ -190,10 +194,10 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     util_parser = subparsers.add_parser("util")
-    util_parser.add_argument("--output-filepath", "-f", type=Path,
-                             default="/l/tmp/prompt.md")
-    util_parser.add_argument("--fill-template", "-t", type=Path,
-                             default="")
+    util_parser.add_argument(
+        "--output-filepath", "-f", type=Path, default="/l/tmp/prompt.md"
+    )
+    util_parser.add_argument("--fill-template", "-t", type=Path, default="")
     util_parser.set_defaults(func=_cmd_util)
 
     cfg_parser = subparsers.add_parser("setup-config")
@@ -223,6 +227,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     browse_parser = pl_sub.add_parser("browse")
     browse_parser.add_argument("--filter", default="")
+    browse_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("/l/obs-chaotic/prompt.md"),
+        help="File to append the selected prompt to",
+    )
     browse_parser.add_argument("--config", type=Path, default=CONFIG_FILE)
     browse_parser.set_defaults(func=_cmd_promptlib_browse)
 
@@ -258,4 +268,4 @@ def main(argv: List[str] | None = None) -> int:
     return handler(parsed_args)
 
 
-__all__ = ['main', 'build_parser']
+__all__ = ["main", "build_parser"]
