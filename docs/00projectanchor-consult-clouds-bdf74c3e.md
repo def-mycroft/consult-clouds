@@ -64,6 +64,41 @@ xxx
 
 
 
+# 🧠 Anchor: Alpha Version Promptlib imperfect-drive 6a6433cf (0/5)
+
+2025-06-21 08:06:25 -0600
+[[prompt4_promptlib_init_imperfect-drive-6a6433cf]]
+task: [link]()
+
+## Log 
+
+2025-06-21 08:17:40 -0600
+
+## Checklist
+
+%% REGION %% 
+- [ ] **Write the Prompt**  
+  _What does this code need to do?_  
+  `...describe the target behavior, interface, or bug...`
+
+- [ ] **Log the Prompt to `docs/`**  
+  _Where is the long-term context?_  
+  `promptX_name.md` → codename: `[codename hash]`
+
+- [ ] **Describe the Purpose**  
+  _Why am I doing this?_  
+  `One sentence: This enables/clarifies/supports...`
+
+- [ ] **Execute the Change**  
+  _What will I edit, run, or generate?_  
+  `...brief note on the script/module/test touched...`
+
+- [ ] **Return Point**  
+  _Where do I pick up next?_  
+  `Next step is to... / Pending: ... / Waiting on: ...`
+%% ENDREGION %%
+
+*** 
 
 # 🧠 Anchor: repeated loops again but document enhance exp plucky-crew (0/5)
 
