@@ -1,6 +1,14 @@
 
 """This is the 'come upw iwth something' loop"""
 
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+from .chat import ChatGPT
+from .config import CONFIG_FILE
+
 FP_VIO_DOCS = '/l/obs-chaotic/project VIO Vibe it Out Process unknown-king 39263c66.md'
 
 PROMPT1 = """
@@ -120,18 +128,82 @@ Not all responses in the same thread are VIO — the user will indicate clearly 
 
 
 
-def iter(product, prompt_rewrite='', prompt_fodder=''):
+def iter(
+    product: str,
+    prompt_fodder: str = "",
+    prompt_rewrite: str = "",
+    *,
+    config_path: Path = CONFIG_FILE,
+    safe: bool = False,
+    dummy: bool = False,
+) -> tuple[str, list[str]]:
+    """Run one VIO enhancement iteration.
+
+    Parameters
+    ----------
+    product : str
+        Current product document in markdown.
+    prompt_fodder : str, optional
+        Context notes that guide the rewrite.
+    prompt_rewrite : str, optional
+        Description of how to modify the product.
+    config_path : Path, optional
+        Configuration path for :class:`ChatGPT`.
+    safe : bool, optional
+        Skip API calls and return the original product.
+    dummy : bool, optional
+        Return a canned response useful for tests.
+
+    Returns
+    -------
+    tuple[str, list[str]]
+        The updated product and five questions.
+    """
 
     if not prompt_rewrite:
-        prompt_rewrite = ('do something like a 15-30% rewrite of this, but '
-                          'this is very flexible')
-    pr = (f"# introduction\n {PROMPT1} \n***\n # rewrite description: \n {prompt_rewrite} \n***\n # writig product\n\n{product} \n***\n# question answers dict\nreview these for context. {prompt_5answers}\n\n***\nokay, now, given what you know here, give a re-draft of the product. then, at the end of the new draft, include 5 questions. ")
+        prompt_rewrite = (
+            "do something like a 15-30% rewrite of this, but this is very "
+            "flexible"
+        )
+    prompt = (
+        f"# introduction\n{PROMPT1}\n***\n# rewrite description:\n{prompt_rewrite}\n"
+        f"***\n# writing product\n\n{product}\n***\n# fodder\n{prompt_fodder}\n\n"
+        "Give a re-draft of the product and then five questions."
+    )
 
-    ## codex you build something here 
-    ##########################################
+    if dummy:
+        reply = (
+            "# NEW PRODUCT DRAFT\n\nDummy product\n\n# QUESTIONS\n\n"
+            "1. q1\n2. q2\n3. q3\n4. q4\n5. q5"
+        )
+    elif safe:
+        reply = f"# NEW PRODUCT DRAFT\n\n{product}\n"
+    else:
+        chat = ChatGPT(config_path=config_path)
+        reply = chat.send(prompt)
 
-    product_updated, questions = # codex: you'' get product and questions from the quetion here.' # i.e. you write code to query chatgpt using this codebase 
-    ##########################################
+    match = re.search(
+        r"# NEW PRODUCT DRAFT\n(?P<prod>.*?)(?:\n# QUESTIONS\n(?P<qs>.*))?$",
+        reply,
+        re.S,
+    )
+    if match:
+        prod_text = match.group("prod").strip()
+        q_text = match.group("qs") or ""
+    else:
+        prod_text = reply.strip()
+        q_text = ""
 
-    return product_updated, questions
+    questions = []
+    for line in q_text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        line = re.sub(r"^\d+\.\s*", "", line)
+        questions.append(line)
+
+    return prod_text, questions[:5]
+
+
+__all__ = ["iter"]
 
