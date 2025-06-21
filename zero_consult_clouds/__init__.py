@@ -8,7 +8,7 @@ from .config import (
     save_config,
     setup_config,
 )
-from . import cli
+from . import cli, promptlib
 
 __version__ = "0.1.0"
 
@@ -20,6 +20,7 @@ __all__ = [
     "save_config",
     "setup_config",
     "cli",
+    "promptlib",
 ]
 from .rewrite_loops import iterative_rewrite
 from .chunking_processor import chunk_content, build_context_windows
