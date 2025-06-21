@@ -59,25 +59,27 @@ def browse(
         print("no prompts found")
         return None
 
-    values = []
-    for fp in files:
+    print(f"promptlib archive: {path}")
+    print(f"total: {len(files)} prompts")
+
+    items = []
+    for i, fp in enumerate(files, 1):
         line = first_line(fp)
-        label = f"{fp.name}\n    * {line}"
-        values.append((str(fp), label))
+        print(f"[{i}] {fp.name} - {line}")
+        items.append(fp)
 
-    from prompt_toolkit.shortcuts import radiolist_dialog
-
-    app = radiolist_dialog(
-        title="promptlib browse",
-        text=f"promptlib archive: {path}\ntotal: {len(files)} prompts",
-        values=values,
-        ok_text="select",
-        cancel_text="quit",
-    )
-    selected = app.run()
-
-    if not selected:
-        return None
+    while True:
+        sel = input("Select number or 'q' to quit: ").strip().lower()
+        if sel in {"q", "quit", ""}:
+            return None
+        try:
+            idx = int(sel) - 1
+            if 0 <= idx < len(items):
+                selected = items[idx]
+                break
+        except ValueError:
+            pass
+        print("invalid selection")
 
     if output_file is None:
         output_file = Path("/l/obs-chaotic/prompt.md")
