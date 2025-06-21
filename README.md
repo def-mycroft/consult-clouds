@@ -7,9 +7,10 @@ To ask chatgpt a question and get a response, use `zero-consult-clouds convo -f 
 The CLI now includes a basic `promptlib` manager for browsing and viewing prompt
 files:
 
-- `zero-consult-clouds promptlib browse` opens an interactive picker and
-  appends the chosen prompt to `/l/obs-chaotic/prompt.md` (use `--output` to
-  change the file).
+- `zero-consult-clouds promptlib browse` opens an interactive picker with fuzzy
+  search that supports arrow-key navigation and typing partial names to select
+  prompts, then appends the chosen prompt to
+  `/l/obs-chaotic/prompt.md` (use `--output` to change the file).
 - `zero-consult-clouds promptlib cat <uuid>` prints a prompt by UUID.
 - `zero-consult-clouds promptlib stats` shows library statistics.
 
