@@ -7,6 +7,7 @@ from typing import Optional
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import FuzzyWordCompleter
+from prompt_toolkit.shortcuts import CompleteStyle
 
 __all__ = [
     "iter_prompt_files",
@@ -84,6 +85,8 @@ def browse(
                 "Select number or search text ('q' to quit): ",
                 completer=completer,
                 complete_in_thread=True,
+                complete_while_typing=True,
+                complete_style=CompleteStyle.MULTI_COLUMN,
             ).strip()
         except (EOFError, KeyboardInterrupt):
             return None
