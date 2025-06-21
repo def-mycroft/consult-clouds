@@ -107,16 +107,12 @@ def test_browse_appends(tmp_path, monkeypatch):
 
     out = tmp_path / "out.md"
 
-    # fake radiolist so no interactive UI
-    class FakeApp:
-        def run(self):
-            return str(p)
+    inputs = ["1", "y"]
 
-    monkeypatch.setattr(
-        "prompt_toolkit.shortcuts.radiolist_dialog",
-        lambda **kwargs: FakeApp(),
-    )
-    monkeypatch.setattr("builtins.input", lambda *a, **k: "y")
+    def fake_input(*args, **kwargs):
+        return inputs.pop(0)
+
+    monkeypatch.setattr("builtins.input", fake_input)
 
     from zero_consult_clouds import promptlib as pl
 
