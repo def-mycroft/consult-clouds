@@ -16,6 +16,7 @@ def _token_match(query: str, text: str) -> bool:
     lower = text.lower()
     return all(t in lower for t in tokens)
 
+
 __all__ = [
     "iter_prompt_files",
     "first_line",

@@ -11,6 +11,7 @@ files:
   search that supports arrow-key navigation and typing partial names to select
   prompts, then appends the chosen prompt to
   `/l/obs-chaotic/prompt.md` (use `--output` to change the file).
+
 - `zero-consult-clouds promptlib cat <uuid>` prints a prompt by UUID.
 - `zero-consult-clouds promptlib stats` shows library statistics.
 
