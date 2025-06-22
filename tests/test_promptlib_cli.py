@@ -120,3 +120,28 @@ def test_browse_appends(tmp_path, monkeypatch):
     pl.browse(pl_dir, output_file=out)
 
     assert out.read_text(encoding="utf-8").strip() == "line1"
+
+
+def test_browse_fuzzy_match(tmp_path, monkeypatch):
+    pl_dir = tmp_path / "pl"
+    pl_dir.mkdir()
+    p1 = pl_dir / "111promptlib-vibeunknown.md"
+    p1.write_text("aaa", encoding="utf-8")
+    (pl_dir / "222promptlib-other.md").write_text("bbb", encoding="utf-8")
+
+    out = tmp_path / "out.md"
+
+    inputs = ["vibe unknown", "y"]
+
+    def fake_prompt(*args, **kwargs):
+        return inputs.pop(0)
+
+    monkeypatch.setattr("prompt_toolkit.PromptSession.prompt", fake_prompt)
+    monkeypatch.setattr("builtins.input", lambda *a, **k: inputs.pop(0))
+
+    from zero_consult_clouds import promptlib as pl
+
+    selected = pl.browse(pl_dir, output_file=out)
+
+    assert selected == p1
+    assert out.read_text(encoding="utf-8").strip() == "aaa"

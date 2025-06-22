@@ -7,6 +7,15 @@ from typing import Optional
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import FuzzyWordCompleter
+from prompt_toolkit.shortcuts import CompleteStyle
+
+
+def _token_match(query: str, text: str) -> bool:
+    """Return ``True`` if all words in ``query`` occur in ``text`` (case-insensitive)."""
+    tokens = query.lower().split()
+    lower = text.lower()
+    return all(t in lower for t in tokens)
+
 
 __all__ = [
     "iter_prompt_files",
@@ -84,6 +93,8 @@ def browse(
                 "Select number or search text ('q' to quit): ",
                 completer=completer,
                 complete_in_thread=True,
+                complete_while_typing=True,
+                complete_style=CompleteStyle.MULTI_COLUMN,
             ).strip()
         except (EOFError, KeyboardInterrupt):
             return None
@@ -97,6 +108,12 @@ def browse(
 
         if sel in mapping:
             selected = mapping[sel]
+            break
+
+        # Try fuzzy match based on words in the input
+        matches = [d for d in display_items if _token_match(sel, d)]
+        if matches:
+            selected = mapping[matches[0]]
             break
 
         print("invalid selection")
